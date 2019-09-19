@@ -1,0 +1,40 @@
+spring:
+
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 1qaz2wsx
+    url: jdbc:mysql://127.0.0.1:3306/website?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=GMT%2B8
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
+
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+      force-request: true
+      force-response: true
+
+  devtools:
+    restart:
+      enabled: true
+
+server:
+  tomcat:
+    uri-encoding: UTF-8
+  port: 8080
+
+mybatis:
+  mapper-locations: classpath:static/mapper/*.xml
+  type-aliases-package: com.zf.website.bean
+  configuration:
+    lazy-loading-enabled: true
+    aggressive-lazy-loading: false
+
+logging:
+  level:debug
