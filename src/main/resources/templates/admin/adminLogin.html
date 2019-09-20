@@ -1,10 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>后台登陆</title>
+    <link rel="stylesheet" href="assest/css/auth.css">
+
+    <script type="text/javascript" src="assest/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="assest/js/jquery.validation/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="assest/js/jquery.validation/validate-methods.js"></script>
+    <script type="text/javascript" src="assest/js/jquery.validation/messages_zh.min.js"></script>
+    <script type="text/javascript" src="assest/js/layui/layui.js"></script>
+    <script type="text/javascript" src="assest/js/common.js"></script>
+    <style>
+        /*.error {*/
+            /*position: absolute;*/
+            /*right: 18px;*/
+            /*top: 5px;*/
+            /*color: #ef392b;*/
+            /*font-size: 12px;*/
+        /*}*/
+    </style>
+
 </head>
+
 <body>
+<div class="lowin">
+    <div class="lowin-brand">
+        <img src="assest/img/kodinger.jpg" alt="logo">
+    </div>
+    <div class="lowin-wrapper">
+        <div class="lowin-box lowin-login">
+            <div class="lowin-box-inner">
+                <form id="loginForm">
+                    <p>登陆并继续</p>
+                    <div class="lowin-group">
+                        <label>账号 </label>
+                        <input type="text" id="username" name="username" placeholder="请输入账号" autocomplete="text"
+                               class="lowin-input">
+                        <label id="username-error" class="error" for="username" style="display: none;"></label>
+                    </div>
+                    <div class="lowin-group password-group">
+                        <label>密码 </label>
+                        <input type="password" id="password" name="password" placeholder="请输入密码" autocomplete="password"
+                               class="lowin-input">
+                        <label id="password-error" class="error" for="password" style="display: none;"></label>
+                    </div>
+                    <button id="loginBtn" class="lowin-btn login-btn">
+                        登陆
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $.validator.setDefaults({
+        submitHandler: function () {
+            $("#loginBtn").setBtnDisabled();
+            $.post("login",$("#loginForm").serializeArray(),function(result){
+                $("#loginBtn").setBtnEnabled();
+                $.msg(result.message);
+                if(result.data){
+                    window.location.href = "admin/main";
+                }
+            });
+        }
+    });
+
+    $("#loginForm").validate({
+        rules: {
+            username: {
+                required: true
+            },
+            password: {
+                required: true
+            }
+        },
+        messages: {
+            username: {
+                required: "账号不能为空",
+            },
+            password: {
+                required: "密码不能为空",
+            }
+        }
+    });
+
+</script>
 
 </body>
 </html>

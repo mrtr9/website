@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class PageController {
 
+    public static final String INDEX = "index.html";
+
     @RequestMapping("index.html")
     public String index(){
         return "index";
@@ -34,7 +36,7 @@ public class PageController {
 
     @RequestMapping("newsDetail.html")
     public String newsDetail(){
-        return "nesDetail";
+        return "newsDetail";
     }
 
     @RequestMapping("product.html")
