@@ -52,55 +52,6 @@ layui.define(mods, function(exports) {
       utils.setUrlState('主页', '#/');
     }
 
-    // 处理 sidebar
-    layui.sidebar.render({
-      elem: '#ccleft',
-      //content:'', 
-      title: '这是左侧打开的栗子',
-      shade: true,
-      // shadeClose:false,
-      direction: 'left',
-      dynamicRender: true,
-      // url: 'views/table/teble2.html',
-      width: '50%', //可以设置百分比和px
-    });
-
-    $('#cc').on('click', function() {
-      var that = this;
-      layui.sidebar.render({
-        elem: that,
-        //content:'', 
-        title: '这是表单盒子',
-        shade: true,
-        // shadeClose:false,
-        // direction: 'left'
-        dynamicRender: true,
-        // url: 'views/form/index.html',
-        width: '50%', //可以设置百分比和px
-      });
-    });
-    // 监听头部右侧 nav
-    component.on('nav(header_right)', function(_that) {
-      var target = _that.elem.attr('kit-target');
-      if (target === 'setting') {
-        // 绑定sidebar
-        layui.sidebar.render({
-          elem: _that.elem,
-          //content:'', 
-          title: '设置',
-          shade: true,
-          // shadeClose:false,
-          // direction: 'left'
-          dynamicRender: true,
-          url: 'views/setting.html',
-          // width: '50%', //可以设置百分比和px
-        });
-      }
-      if (target === 'help') {
-        $.msg("QQ:233691")
-      }
-    });
-
     // 注入mock
     layui.mockjs.inject(APIs);
 
@@ -179,8 +130,8 @@ layui.define(mods, function(exports) {
           name: 'Cascader'
         }, {
           path: '/',
-          component: 'views/app.html',
-          name: '主页'
+          component: '/admin/adminIndex.html',
+          name: '欢迎页'
         }, {
           path: '/user/my',
           component: 'views/profile.html',

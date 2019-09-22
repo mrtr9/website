@@ -28,49 +28,12 @@
         </div>
         <div class="layui-layout-right">
             <ul class="kit-nav" lay-filter="header_right">
-                <li class="kit-item" kit-target="help">
-                    <a href="javascript:;">
-                        <i class="layui-icon">&#xe607;</i>
-                        <span>帮助</span>
-                    </a>
-                </li>
-                <li class="kit-item" id="ccleft">
-                    <a href="javascript:;">
-                        <i class="layui-icon">&#xe60e;</i>
-                    </a>
-                </li>
-                <li class="kit-item" id="cc">
-                    <a href="javascript:;">
-                        <i class="layui-icon">&#xe64c;</i>
-                    </a>
-                </li>
                 <li class="kit-item">
                     <a href="javascript:;">
-              <span>
-                Van
-              </span>
+                      <span th:text="${session.loginUser.getUsername()}">
+                          张三
+                      </span>
                     </a>
-                    <ul class="kit-nav-child kit-nav-right">
-                        <li class="kit-item">
-                            <a href="/user/my">
-                                <i class="layui-icon">&#xe612;</i>
-                                <span>个人中心</span>
-                            </a>
-                        </li>
-                        <li class="kit-item" kit-target="setting">
-                            <a href="javascript:;">
-                                <i class="layui-icon">&#xe614;</i>
-                                <span>设置</span>
-                            </a>
-                        </li>
-                        <li class="kit-nav-line"></li>
-                        <li class="kit-item">
-                            <a href="temp/login.html">
-                                <i class="layui-icon">&#x1006;</i>
-                                <span>注销</span>
-                            </a>
-                        </li>
-                    </ul>
                 </li>
             </ul>
         </div>
@@ -80,42 +43,28 @@
         <div class="layui-side-scroll">
             <div id="menu-box">
                 <ul class="kit-menu">
-                    <li class="kit-menu-item layui-show">
-                        <a href="#">
+                    <li class="kit-menu-item">
+                        <a href="javascript:;">
                             <i class="layui-icon"></i>
-                            <span>Banner管理</span>
+                            <span>欢迎页</span>
                         </a>
                     </li>
                     <li class="kit-menu-item">
                         <a href="javascript:;">
                             <i class="layui-icon"></i>
-                            <span>组件</span>
-                        </a>
-                        <ul class="kit-menu-child layui-anim layui-anim-upbit">
-                            <li class="kit-menu-item">
-                                <a href="#/components/select">
-                                    <i class="layui-icon"></i>
-                                    <span>Select</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="kit-menu-item">
-                        <a href="javascript:;">
-                            <i class="layui-icon"></i>
-                            <span>异常页</span>
+                            <span>首页管理</span>
                         </a>
                         <ul class="kit-menu-child layui-anim layui-anim-upbit">
                             <li class="kit-menu-item">
                                 <a href="#/exception/403">
                                     <i class="layui-icon">&#xe69c;</i>
-                                    <span>403</span>
+                                    <span>logo设置</span>
                                 </a>
                             </li>
                             <li class="kit-menu-item">
                                 <a href="#/exception/404">
                                     <i class="layui-icon">&#xe61c;</i>
-                                    <span>404</span>
+                                    <span>banner设置</span>
                                 </a>
                             </li>
                             <li class="kit-menu-item">
@@ -123,106 +72,6 @@
                                     <i class="layui-icon">&#xe64d;</i>
                                     <span>500</span>
                                 </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="kit-menu-item">
-                        <a href="javascript:;" class="child">
-                            <i class="layui-icon"></i>
-                            <span>多级菜单</span>
-                        </a>
-                        <ul class="kit-menu-child kit-menu-child layui-anim layui-anim-upbit">
-                            <li class="kit-menu-item">
-                                <a href="#/user/form">
-                                    <i class="layui-icon"></i>
-                                    <span>二级菜单1</span>
-                                </a>
-                            </li>
-                            <li class="kit-menu-item">
-                                <a href="#/user/as" class="child">
-                                    <i class="layui-icon"></i>
-                                    <span>二级菜单2</span>
-                                </a>
-                                <ul class="kit-menu-child kit-menu-child layui-anim layui-anim-upbit">
-                                    <li class="kit-menu-item">
-                                        <a href="https://www.baidu.com" target="_blank">
-                                            <i class="layui-icon"></i>
-                                            <span>三级菜单1</span>
-                                        </a>
-                                    </li>
-                                    <li class="kit-menu-item">
-                                        <a href="javascript:;" target="_blank">
-                                            <i class="layui-icon"></i>
-                                            <span>三级菜单2</span>
-                                        </a>
-                                        <ul class="kit-menu-child kit-menu-child layui-anim layui-anim-upbit">
-                                            <li class="kit-menu-item">
-                                                <a href="https://www.baidu.com" target="_blank">
-                                                    <i class="layui-icon"></i>
-                                                    <span>四级菜单1</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="kit-menu-item">
-                                <a href="#/user/aa">
-                                    <i class="layui-icon"></i>
-                                    <span>二级菜单3</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="kit-menu-item">
-                        <a href="javascript:;" class="child">
-                            <i class="layui-icon"></i>
-                            <span>API文档</span>
-                        </a>
-                        <ul class="kit-menu-child layui-anim layui-anim-upbit">
-                            <li class="kit-menu-item">
-                                <a href="#/docs/mockjs">
-                                    <i class="layui-icon"></i>
-                                    <span>拦截器(Mockjs)</span>
-                                </a>
-                            </li>
-                            <li class="kit-menu-item">
-                                <a href="#/docs/menu">
-                                    <i class="layui-icon"></i>
-                                    <span>左侧菜单(Menu)</span>
-                                </a>
-                            </li>
-                            <li class="kit-menu-item">
-                                <a href="#/docs/route">
-                                    <i class="layui-icon"></i>
-                                    <span>路由配置(Route)</span>
-                                </a>
-                            </li>
-                            <li class="kit-menu-item">
-                                <a href="#/docs/tabs">
-                                    <i class="layui-icon"></i>
-                                    <span>选项卡(Tabs)</span>
-                                </a>
-                            </li>
-                            <li class="kit-menu-item">
-                                <a href="#/docs/utils">
-                                    <i class="layui-icon"></i>
-                                    <span>工具包(Utils)</span>
-                                </a>
-                            </li>
-                            <li class="kit-menu-item layui-show">
-                                <a href="javascript:;" class="child">
-                                    <i class="layui-icon"></i>
-                                    <span>组件(Component)</span>
-                                </a>
-                                <ul class="kit-menu-child kit-menu-child layui-anim layui-anim-upbit">
-                                    <li class="kit-menu-item">
-                                        <a href="#/docs/component/nav">
-                                            <i class="layui-icon"></i>
-                                            <span>导航栏(Nav)</span>
-                                        </a>
-                                    </li>
-                                </ul>
                             </li>
                         </ul>
                     </li>
@@ -244,12 +93,12 @@
 </div>
 
 <script>
-
     layui.config({
         base: '../assest/js/kit_modules/'
     }).use('admin');
 
-</script>
+    var adminMainAction = {};
 
+</script>
 </body>
 </html>

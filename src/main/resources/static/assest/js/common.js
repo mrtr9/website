@@ -88,23 +88,22 @@ $.extend({
                 content: url + "?" + _params,
                 yes: function (index, layero) {
                     //按钮【按钮一】的回调
-                    if (typeof params.btn1 === 'function') {
-                        params.btn1();
+                    if (typeof option.btn1 === 'function') {
+                        option.btn1();
                     }
                     layer.close(index);
                 }
                 , btn2: function (index, layero) {
-                    if (typeof params.btn2 === 'function') {
-                        params.btn3();
+                    if (typeof option.btn2 === 'function') {
+                        option.btn3();
                     }
-                    console.log("btn2");
                     //按钮【按钮二】的回调
 
                     //return false 开启该代码可禁止点击该按钮关闭
                 }
                 , btn3: function (index, layero) {
-                    if (typeof params.btn3 === 'function') {
-                        params.btn3();
+                    if (typeof option.btn3 === 'function') {
+                        option.btn3();
                     }
                     //按钮【按钮三】的回调
 

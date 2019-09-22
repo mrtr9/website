@@ -39,6 +39,11 @@ public class AdminController {
         return "admin/adminMain";
     }
 
+    @RequestMapping("admin/password/changePassword")
+    public String changePassword(){
+        return "admin/password/changePassword";
+    }
+
     @RequestMapping(value = "login",method = RequestMethod.POST)
     @ResponseBody
     public ResponseResult login(@Valid User user, BindingResult bindingResult, HttpSession session) {
