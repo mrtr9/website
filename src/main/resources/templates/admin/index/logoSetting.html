@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>设置logo</title>
+    <link rel="stylesheet" href="../../assest/js/layui/css/layui.css">
+    <script type="text/javascript" src="../../assest/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../../assest/js/layui/layui.js"></script>
+    <script type="text/javascript" src="../../assest/js/common.js"></script>
+</head>
+<body>
+    <div class="layui-container" style="margin-top: 10px;">
+        <div class="layui-row">
+            <button type="button" class="layui-btn" id="fileUpload">
+                <i class="layui-icon">&#xe67c;</i>上传Logo
+            </button>
+        </div>
+        <div class="layui-row" style="margin-top: 10px;">
+            <span>注：首页仅展示200*40尺寸的Logo</span>
+        </div>
+    </div>
+    <hr style="background-color:#ff9d02;height:3px;"/>
+    <div id="logoViews" class="layui-container" style="margin-top: 10px;">
+
+    </div>
+<script>
+    layui.use('upload', function(){
+        var upload = layui.upload;
+
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#fileUpload' //绑定元素
+            ,url: '/upload/' //上传接口
+            // ,accept:"images"
+            ,acceptMime:"image/*"
+            ,done: function(res){
+                //上传完毕回调
+                console.log(res);
+                $.msg("上传成功");
+            }
+            ,error: function(){
+                //请求异常回调
+            }
+        });
+    });
+</script>
+</body>
+</html>

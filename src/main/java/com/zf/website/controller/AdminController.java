@@ -34,15 +34,25 @@ public class AdminController {
         return "admin/adminLogin";
     }
 
-    @RequestMapping("admin/main")
-    public String main(){
-        return "admin/adminMain";
-    }
-
-    @RequestMapping("admin/password/changePassword")
-    public String changePassword(){
-        return "admin/password/changePassword";
-    }
+//    @RequestMapping("admin/main")
+//    public String main(){
+//        return "admin/adminMain";
+//    }
+//
+//    @RequestMapping("admin/adminIndex.html")
+//    public String adminIndex(){
+//        return "admin/adminIndex";
+//    }
+//
+//    @RequestMapping("admin/index/logoSetting")
+//    public String logoSetting(){
+//        return "admin/index/logoSetting";
+//    }
+//
+//    @RequestMapping("admin/password/changePassword")
+//    public String changePassword(){
+//        return "admin/password/changePassword";
+//    }
 
     @RequestMapping(value = "login",method = RequestMethod.POST)
     @ResponseBody
@@ -58,5 +68,13 @@ public class AdminController {
                 return ResponseResult.builder().code(200).message("用户名或密码错误").data(Boolean.FALSE).build();
             }
         }
+    }
+
+    @RequestMapping("logout")
+    @ResponseBody
+    public ResponseResult logout(HttpSession session){
+        session.removeAttribute("loginUser");
+        session.invalidate();
+        return ResponseResult.builder().code(200).message("注销成功").data(Boolean.TRUE).build();
     }
 }

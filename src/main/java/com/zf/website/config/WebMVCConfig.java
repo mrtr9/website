@@ -35,6 +35,6 @@ public class WebMVCConfig implements WebMvcConfigurer {
         excludePathList.add("/newsDetail.html");
         excludePathList.add("/product.html");
         registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/admin/**").excludePathPatterns(excludePathList);
-        registry.addInterceptor(new PjaxInterceptor());
+//        registry.addInterceptor(new PjaxInterceptor());
     }
 }
