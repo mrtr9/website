@@ -1,6 +1,10 @@
 package com.zf.website.controller;
 
+import com.zf.website.bean.Logo;
+import com.zf.website.service.IIndexService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -14,8 +18,13 @@ public class PageController {
 
     public static final String INDEX = "index.html";
 
+    @Autowired
+    private IIndexService indexService;
+
     @RequestMapping("index.html")
-    public String index(){
+    public String index(Model model){
+        Logo logo = indexService.getUsedLogo();
+        model.addAttribute("logo", logo);
         return "index";
     }
 

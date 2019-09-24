@@ -1,8 +1,10 @@
 package com.zf.website.mapper;
 
+import com.zf.website.bean.Banner;
 import com.zf.website.bean.Logo;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 /**
  * Model:
@@ -13,6 +15,60 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface IndexMapper {
 
-    @Insert("insert into t_logo values(null,#{path},#{createTime})")
-    public int saveLogo(Logo logo);
+    @Select("select * from t_logo where id=#{id}")
+    @Results({
+            @Result(column = "real_path",property = "realPath"),
+            @Result(column = "relative_path",property = "relativePath"),
+    })
+    Logo getLogo(Integer id);
+
+    @Insert("insert into t_logo values(null,#{realPath},#{relativePath},#{used})")
+    int saveLogo(Logo logo);
+
+    @Delete("delete from t_logo where id=#{id}")
+    int deleteLogo(Integer id);
+
+    @Select("select * from t_logo")
+    @Results({
+            @Result(column = "real_path",property = "realPath"),
+            @Result(column = "relative_path",property = "relativePath"),
+    })
+    List<Logo> listLogo();
+
+    @Update("update t_logo set used=0")
+    int unsedLogo();
+
+    @Update("update t_logo set used=1 where id=#{id}")
+    int usedLogo(Integer id);
+
+    @Select("select * from t_logo where used=1")
+    @Results({
+            @Result(column = "real_path",property = "realPath"),
+            @Result(column = "relative_path",property = "relativePath"),
+    })
+    Logo getUsedLogo();
+
+    @Insert("insert into t_banner values(null,#{title},#{describe},#{realPath},#{relativePath},#{used})")
+    int saveBanner(Banner banner);
+
+    @Delete("delete from t_banner where id=#{id}")
+    int deleteBanner(Integer id);
+
+    @Update("update t_banner set title=#{title},describe=#{describe} where id=#{id}")
+    int updateBanner(Banner banner);
+
+    @Update("update t_banner set used=1 where id=#{id}")
+    int usedBanner(Integer id);
+
+    @Update("update t_banner set used=0 where id=#{id}")
+    int unsedBanner(Integer id);
+
+    @Select("select * from t_banner where id=#{id}")
+    Banner getBanner(Integer id);
+
+    @Select("select * from t_banner where used=1")
+    List<Banner> getUsedListBanner();
+
+    @Select("select * from t_banner")
+    List<Banner> listBanner();
 }

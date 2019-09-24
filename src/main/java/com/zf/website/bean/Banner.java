@@ -5,21 +5,22 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 
 /**
- * Model:Logo实体类
+ * Model: Banner实体类
  * Author:Tr9(韩峰)
- * Description:Logo实体类
- * Time: 2019/9/23 13:44
+ * Description:
+ * Time: 2019/9/24 15:42
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Logo {
+public class Banner {
 
     private Integer id;
+    private String title;
+    private String describe;
     private String realPath;
     private String relativePath;
     private Boolean used;

@@ -2,8 +2,10 @@ package com.zf.website.config;
 
 import com.zf.website.interceptor.LoginInterceptor;
 import com.zf.website.interceptor.PjaxInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -19,9 +21,18 @@ import java.util.List;
 @Configuration
 public class WebMVCConfig implements WebMvcConfigurer {
 
+    @Autowired
+    private FileUploadConfig fileUploadConfig;
+
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addRedirectViewController("/", "index.html");
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler(fileUploadConfig.getLogoRelativePath() + "**").addResourceLocations("file:" + fileUploadConfig.getLogoRealPath());
+        registry.addResourceHandler(fileUploadConfig.getBannerRelativePath() + "**").addResourceLocations("file:" + fileUploadConfig.getBannerRealPath());
     }
 
     @Override

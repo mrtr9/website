@@ -3,46 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <title>设置logo</title>
-    <link rel="stylesheet" href="../../assest/js/layui/css/layui.css">
+    <link rel="stylesheet" href="../../assest/css/common.css"/>
+    <link rel="stylesheet" href="../../assest/js/layui/css/layui.css"/>
     <script type="text/javascript" src="../../assest/js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="../../assest/js/layui/layui.js"></script>
     <script type="text/javascript" src="../../assest/js/common.js"></script>
 </head>
 <body>
-    <div class="layui-container" style="margin-top: 10px;">
-        <div class="layui-row">
-            <button type="button" class="layui-btn" id="fileUpload">
-                <i class="layui-icon">&#xe67c;</i>上传Logo
-            </button>
-        </div>
-        <div class="layui-row" style="margin-top: 10px;">
-            <span>注：首页仅展示200*40尺寸的Logo</span>
-        </div>
+<div class="layui-container" style="margin-top: 10px;">
+    <div class="layui-row">
+        <button type="button" class="layui-btn" id="fileUpload">
+            <i class="layui-icon">&#xe67c;</i>上传Logo
+        </button>
     </div>
-    <hr style="background-color:#ff9d02;height:3px;"/>
-    <div id="logoViews" class="layui-container" style="margin-top: 10px;">
+    <div class="layui-row" style="margin-top: 10px;">
+        <span>注：</span><br/>
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;1.首页建议展示200*40尺寸的Logo</span><br/>
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;2.绿色边框的Logo为首页启用的Logo</span>
+    </div>
+</div>
+<hr class="hr"/>
+<div id="logoViews" class="layui-container" style="margin-top: 10px;">
 
-    </div>
+</div>
 <script>
-    layui.use('upload', function(){
+
+    var logoSettingAction = {};
+
+    $(function () {
+        logoSettingAction.getLogoList();
+    });
+
+    layui.use('upload', function () {
         var upload = layui.upload;
 
         //执行实例
         var uploadInst = upload.render({
             elem: '#fileUpload' //绑定元素
-            ,url: '/upload/' //上传接口
+            , url: '/uploadLogo' //上传接口
             // ,accept:"images"
-            ,acceptMime:"image/*"
-            ,done: function(res){
+            , acceptMime: "image/*"
+            , done: function (res) {
                 //上传完毕回调
-                console.log(res);
-                $.msg("上传成功");
+                $.msg(res.message);
+                logoSettingAction.getLogoList();
             }
-            ,error: function(){
+            , error: function () {
                 //请求异常回调
             }
         });
     });
+
+    logoSettingAction.getLogoList = function () {
+        $.get("/listLogo", {}, function (result) {
+            var logoViews = $("#logoViews");
+            var html = "";
+            if (result.data != null) {
+                $(result.data).each(function (i, o) {
+                    if(o.used){
+                        html += "<div class='logoDiv'><img logoId='"+o.id+"' class='logoSize logoSelect pointer' src='"+o.relativePath+"' onclick='logoSettingAction.selectedLogo(this)'/><i logoId='"+o.id+"' onclick='logoSettingAction.deleteLogo(this)' class='layui-icon pointer'>&#xe640;</i></div>";
+                    }else{
+                        html += "<div class='logoDiv'><img logoId='"+o.id+"' class='logoSize pointer' src='"+o.relativePath+"' onclick='logoSettingAction.selectedLogo(this)'/><i logoId='"+o.id+"' onclick='logoSettingAction.deleteLogo(this)' class='layui-icon pointer'>&#xe640;</i></div>";
+                    }
+                });
+            }
+            logoViews.html(html);
+        });
+    };
+
+    logoSettingAction.deleteLogo = function(obj){
+        $.confirm("删除Logo","确认删除此Logo吗？",function(){
+           var logoId = $(obj).attr("logoId");
+           $.delete("/deleteLogo",{id:logoId},function(result){
+               $.msg(result.message);
+               if(result.data){
+                   logoSettingAction.getLogoList();
+               }
+           });
+        });
+    }
+
+    logoSettingAction.selectedLogo = function(obj){
+        $.confirm("启用Logo","启用此Logo将取消其他启用Logo,确定启用此Logo作为首页展示吗？",function(){
+            var logoId = $(obj).attr("logoId");
+            $.put("/usedLogo",{id:logoId},function(result){
+                $.msg(result.message);
+                if(result.data){
+                    $(obj).addClass("logoSelect");
+                }
+            });
+        });
+    }
 </script>
 </body>
 </html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Banner设置</title>
+    <link rel="stylesheet" href="../../assest/css/common.css"/>
+    <link rel="stylesheet" href="../../assest/js/layui/css/layui.css"/>
+    <script type="text/javascript" src="../../assest/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../../assest/js/layui/layui.js"></script>
+    <script type="text/javascript" src="../../assest/js/common.js"></script>
+</head>
+<body>
+<div class="layui-container" style="margin-top: 10px;">
+    <div class="layui-row">
+        <form id="bannerForm" class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">标题：</label>
+                <div class="layui-input-block">
+                    <input type="text" id="title" name="title" autocomplete="off" placeholder="请输入标题"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">描述：</label>
+                <div class="layui-input-block">
+                    <input type="text" id="describe" name="describe" autocomplete="off" placeholder="请输入描述"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">图片：</label>
+                <div class="layui-input-block">
+                    <button type="button" class="layui-btn" id="fileUpload">
+                        <i class="layui-icon">&#xe67c;</i>上传图片
+                    </button>
+                </div>
+            </div>
+
+        </form>
+        <div align="center" class="layui-row">
+            <button id="bannerSubmit" class="layui-btn layui-btn-normal">保存</button>
+        </div>
+    </div>
+    <div class="layui-row" style="margin-top: 10px;">
+        <span>注：banner建议展示1920*898尺寸的图片</span>
+    </div>
+</div>
+<hr class="hr"/>
+<div id="bannerViews" class="layui-container" style="margin-top: 10px;">
+
+</div>
+<script>
+
+    var bannerSettingAction = {};
+
+    layui.use('upload', function () {
+        var upload = layui.upload;
+
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#fileUpload' //绑定元素
+            , url: '/saveBanner' //上传接口
+            // ,accept:"images"
+            , acceptMime: "image/*"
+            , auto: false
+            , bindAction: "#bannerSubmit"
+            , before: function () {
+                this.data = {
+                    title: $("#title").val(),
+                    describe: $("#describe").val()
+                }
+            }
+            , done: function (res) {
+                //上传完毕回调
+                $.msg(res.message);
+                $("#bannerForm")[0].reset();
+
+            }
+            , error: function () {
+                //请求异常回调
+            }
+        });
+    });
+
+</script>
+</body>
+</html>

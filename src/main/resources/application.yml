@@ -44,3 +44,9 @@ mybatis:
 
 logging:
   level:debug
+
+fileupload:
+  logoRelativePath: /images/logo/
+  logoRealPath: D:/images/logo/
+  bannerRelativePath: /images/banner/
+  bannerRealPath: D:/images/banner/
