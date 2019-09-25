@@ -7,9 +7,9 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 /**
- * Model:
+ * Model:首页管理Mapper
  * Author:Tr9(韩峰)
- * Description:
+ * Description:包含logo设置、banner设置的增删改查操作
  * Time: 2019/9/23 13:48
  */
 @Mapper
@@ -54,7 +54,7 @@ public interface IndexMapper {
     @Delete("delete from t_banner where id=#{id}")
     int deleteBanner(Integer id);
 
-    @Update("update t_banner set title=#{title},describe=#{describe} where id=#{id}")
+    @Update("update t_banner set title=#{title},`describe`=#{describe} where id=#{id}")
     int updateBanner(Banner banner);
 
     @Update("update t_banner set used=1 where id=#{id}")
@@ -64,11 +64,23 @@ public interface IndexMapper {
     int unsedBanner(Integer id);
 
     @Select("select * from t_banner where id=#{id}")
+    @Results({
+            @Result(column = "real_path",property = "realPath"),
+            @Result(column = "relative_path",property = "relativePath")
+    })
     Banner getBanner(Integer id);
 
     @Select("select * from t_banner where used=1")
+    @Results({
+            @Result(column = "real_path",property = "realPath"),
+            @Result(column = "relative_path",property = "relativePath")
+    })
     List<Banner> getUsedListBanner();
 
     @Select("select * from t_banner")
+    @Results({
+            @Result(column = "real_path",property = "realPath"),
+            @Result(column = "relative_path",property = "relativePath")
+    })
     List<Banner> listBanner();
 }

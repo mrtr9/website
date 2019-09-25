@@ -5,8 +5,9 @@
     <meta name="viewport"
           content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
     <title>类友网络-首页</title>
-    <link rel="stylesheet" href="assest/js/layui/css/layui.css">
-    <link rel="stylesheet" href="assest/css/index.css">
+    <link rel="stylesheet" href="assest/css/common.css"/>
+    <link rel="stylesheet" href="assest/js/layui/css/layui.css"/>
+    <link rel="stylesheet" href="assest/css/index.css"/>
 </head>
 <body>
 <!-- nav部分 -->
@@ -33,7 +34,7 @@
 <!-- banner部分 -->
 <div>
     <div class="layui-carousel" id="banner">
-        <div carousel-item>
+        <div carousel-item th:if="${bannerList.size() == 0}">
             <div>
                 <img src="assest/img/banner1.jpg">
                 <div class="panel">
@@ -46,6 +47,15 @@
                 <div class="panel">
                     <p class="title">类友网络</p>
                     <p>完美前端体验</p>
+                </div>
+            </div>
+        </div>
+        <div carousel-item th:if="${bannerList.size() > 0}">
+            <div th:each="banner : ${bannerList}">
+                <img th:src="${banner.getRelativePath()}"/>
+                <div class="panel">
+                    <p class="title" th:text="${banner.getTitle()}"/>
+                    <p th:text="${banner.describe}"/>
                 </div>
             </div>
         </div>
@@ -175,9 +185,7 @@
                     </div>
                     <div class="layui-col-sm6 layui-col-md4 layui-col-lg3">
                         <p class="contact-top"><span class="right">浙江杭州阿里巴巴西溪园区</span></p>
-                        <p class="contact-bottom"><span class="right">Copyright&nbsp;©&nbsp;2016-2018 More Templates <a
-                                href="http://www.cssmoban.com/" target="_blank" title="模板之家">模板之家</a> - Collect from <a
-                                href="http://www.cssmoban.com/" title="网页模板" target="_blank">网页模板</a></span></p>
+                        <p class="contact-bottom"><span class="right">Copyright&nbsp;©&nbsp;2016-2018&nbsp;&nbsp;ICP&nbsp;备888888号</span></p>
                     </div>
                 </div>
             </div>

@@ -1,11 +1,14 @@
 package com.zf.website.controller;
 
+import com.zf.website.bean.Banner;
 import com.zf.website.bean.Logo;
 import com.zf.website.service.IIndexService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 /**
  * Model:页面Controller
@@ -24,7 +27,9 @@ public class PageController {
     @RequestMapping("index.html")
     public String index(Model model){
         Logo logo = indexService.getUsedLogo();
+        List<Banner> bannerList = indexService.getUsedListBanner();
         model.addAttribute("logo", logo);
+        model.addAttribute("bannerList", bannerList);
         return "index";
     }
 

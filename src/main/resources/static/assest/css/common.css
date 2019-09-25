@@ -14,10 +14,30 @@
     border:2px solid green;
 }
 
+.bannerDiv
+{
+    display: inline-block;
+    padding-left: 60px;
+    padding-bottom: 40px;
+}
+
+.bannerSize{
+    width:480px;
+    height:224px;
+}
+
+.bannerSelect{
+    border:2px solid green;
+}
+
 .pointer{
     cursor:pointer;
 }
 
 .hr{
     background-color:#ff9d02;height:3px;
+}
+
+.myHidden{
+    display: none;
 }

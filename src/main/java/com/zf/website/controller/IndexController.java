@@ -112,7 +112,11 @@ public class IndexController {
     }
 
     @PutMapping("updateBanner")
-    public ResponseResult updateBanner(Banner banner){
+    public ResponseResult updateBanner(Integer editId,String editTitle,String editDescribe){
+        Banner banner = new Banner();
+        banner.setId(editId);
+        banner.setTitle(editTitle);
+        banner.setDescribe(editDescribe);
         boolean flag = indexService.updateBanner(banner);
         if(flag)
             return ResponseResult.builder().code(200).message("修改成功").data(Boolean.TRUE).build();

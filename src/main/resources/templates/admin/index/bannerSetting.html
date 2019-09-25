@@ -42,7 +42,9 @@
         </div>
     </div>
     <div class="layui-row" style="margin-top: 10px;">
-        <span>注：banner建议展示1920*898尺寸的图片</span>
+        <span>注：</span><br/>
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;1.banner建议展示1920*898尺寸的图片</span><br/>
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;2.绿色边框的图片为首页启用的banner图片</span>
     </div>
 </div>
 <hr class="hr"/>
@@ -51,7 +53,13 @@
 </div>
 <script>
 
+    var index;
+
     var bannerSettingAction = {};
+
+    $(function () {
+        bannerSettingAction.bannerList();
+    });
 
     layui.use('upload', function () {
         var upload = layui.upload;
@@ -74,13 +82,106 @@
                 //上传完毕回调
                 $.msg(res.message);
                 $("#bannerForm")[0].reset();
-
+                bannerSettingAction.bannerList();
             }
             , error: function () {
                 //请求异常回调
             }
         });
     });
+
+    bannerSettingAction.bannerList = function () {
+        $.get("/listBanner", {}, function (result) {
+            if (result.data.length > 0) {
+                var bannerViews = $("#bannerViews");
+                var html = "";
+                $(result.data).each(function (i, o) {
+                    if (o.used) {
+                    } else {
+                        html += "<div class='bannerDiv'>" +
+                            "<div><img bannerId='" + o.id + "' onclick='bannerSettingAction.changeBannerType(this)' class='bannerSize pointer' src='" + o.relativePath + "'/></div>" +
+                            "<div style='margin-top: 10px;'>" +
+                            "<i onclick='bannerSettingAction.editBanner(this)' bannerId='" + o.id + "' class='layui-icon pointer'>&#xe642;</i>" +
+                            "<i style='position: relative;margin-left: 450px;' bannerId='" + o.id + "' onclick='bannerSettingAction.deleteBanner(this)' class='layui-icon pointer'>&#xe640;</i>" +
+                            "</div>" +
+                            "</div>";
+                    }
+                });
+                bannerViews.html(html);
+            }
+        });
+    }
+
+    bannerSettingAction.changeBannerType = function (obj) {
+        var bannerId = $(obj).attr("bannerId");
+        $.getSychronization("/getBanner", {id: bannerId}, function (result) {
+            if (result.data.used) {
+                console.log("failed");
+                $.confirm("停用", "是否停用此展示图片？", function () {
+                    $.put("/unsedBanner", {id: bannerId}, function (r) {
+                        $(obj).removeClass("bannerSelect");
+                        $.msg(r.message);
+                    });
+                });
+            } else {
+                $.confirm("启用", "是否启用此展示图片？", function () {
+                    $.put("/usedBanner", {id: bannerId}, function (r) {
+                        $(obj).addClass("bannerSelect");
+                        $.msg(r.message);
+                    });
+                });
+            }
+        });
+    }
+
+    bannerSettingAction.editBanner = function (obj) {
+        var bannerId = $(obj).attr("bannerId");
+        $.get("/getBanner", {id: bannerId}, function (result) {
+            //页面层
+            index = layer.open({
+                type: 1,
+                skin: 'layui-layer-rim', //加上边框
+                title: "编辑",
+                area: ['500px', '310px'], //宽高
+                content:
+                    "<div class='layui-container' style='width: 400px;height: 240px;'>" +
+                    "<form id='bannerEditForm' class='layui-form'>" +
+                    "<input name='editId' type='hidden' value='" + result.data.id + "'/>" +
+                    "<div class='layui-row' style='margin-top: 20px;'>" +
+                    "<label for=''>标题：</label>" +
+                    "<input type='text' id='title' name='editTitle' value='" + result.data.title + "' class='layui-input' />" +
+                    "</div>" +
+                    "<div class='layui-row' style='margin-top: 20px;'>" +
+                    "<label for=''>描述：</label>" +
+                    "<input type='text' id='title' name='editDescribe' value='" + result.data.describe + "' class='layui-input' />" +
+                    "</div>" +
+                    "</form>" +
+                    "<div align='center' style='margin-top: 30px;'><button onclick='bannerSettingAction.doBannerEdit()' class='layui-btn layui-btn-normal'>修改</button></div>" +
+                    "</div>"
+
+            });
+        });
+    }
+
+    bannerSettingAction.doBannerEdit = function(){
+        $.put("/updateBanner",$("#bannerEditForm").serializeArray(),function(result){
+            $.msg(result.message);
+            if(result.data){
+                layer.close(index);
+            }
+        });
+    }
+
+    bannerSettingAction.deleteBanner = function (obj) {
+        var bannerId = $(obj).attr("bannerId");
+        $.confirm("删除", "是否删除此展示图片？", function () {
+            $.delete("/deleteBanner", {id: bannerId}, function (result) {
+                $.msg(result.message);
+                bannerSettingAction.bannerList();
+            });
+        });
+    }
+
 
 </script>
 </body>
