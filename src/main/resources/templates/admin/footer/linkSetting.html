@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>合作伙伴设置</title>
+    <link rel="stylesheet" href="../../assest/css/common.css"/>
+    <link rel="stylesheet" href="../../assest/js/layui/css/layui.css"/>
+    <script type="text/javascript" src="../../assest/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../../assest/js/jquery.serializejson.min.js"></script>
+    <script type="text/javascript" src="../../assest/js/layui/layui.js"></script>
+    <script type="text/javascript" src="../../assest/js/common.js"></script>
+</head>
+<body>
+
+<br/>
+<div class="layui-container">
+    <form id="linksForm" class="layui-form">
+        <div class="layui-row">
+            友情连接（点击右侧添加）&nbsp;&nbsp;&nbsp;&nbsp;<i onclick="linkSettingAction.addLink()" class="layui-icon pointer">&#xe654;</i>
+            <br/>
+            <br/>
+            <div id="linkDiv">
+                <div name="linkBlock">
+                    <div class="layui-row">
+                        <div class='layui-col-md3'>
+                            <label class='layui-form-label'>名称：</label>
+                            <div class='layui-input-block'>
+                                <input type='text' class='layui-input' name='links[0].nickName' value=''
+                                       placeholder='请输入友情连接名称'/>
+                            </div>
+                        </div>
+                        <div class='layui-col-md8'>
+                            <label class='layui-form-label'>链接地址：</label>
+                            <div class='layui-input-block'>
+                                <input type='text' class='layui-input' name='links[0].url' value=''
+                                       placeholder='请输入友情链接地址'/>
+                            </div>
+                        </div>
+                        <div class='layui-col-md1' style="padding-left: 10px;">
+                            <a class="layui-btn"><i class="layui-icon">&#xe640;</i>删除</a>
+                        </div>
+                    </div>
+                    <br/>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<hr class="hr"/>
+<div align="center">
+    <button id="linkSubmit" onclick="linkSettingAction.save()" class="layui-btn layui-btn-normal">保存</button>
+</div>
+
+<script>
+
+    var linkSettingAction = {}
+
+    var linksNum = 0;
+
+    linkSettingAction.addLink = function () {
+        linksNum++;
+        var linkDiv = $("#linkDiv");
+        var html = $("#linkDiv").html();
+        var nickNames = $("input[name*='nickName']");
+        var urls = $("input[name*='url']");
+        html += "<div name='linkBlock'><div class='layui-row' >" +
+            "<div class='layui-col-md4'>" +
+            "<label class='layui-form-label'>名称：</label>" +
+            "<div class='layui-input-block'>" +
+            "<input type='text' class='layui-input' name='links[" + linksNum + "].nickName' value='' placeholder='请输入友情连接名称'/>" +
+            "</div>" +
+            "</div>" +
+            "<div class='layui-col-md8'>" +
+            "<label class='layui-form-label'>链接地址：</label>" +
+            "<div class='layui-input-block'>" +
+            "<input type='text' class='layui-input' name='links[" + linksNum + "].url' value='' placeholder='请输入友情链接地址'/>" +
+            "</div>" +
+            "</div>" +
+            "</div><br/></div>";
+        linkDiv.html(html);
+        $("div[name='linkBlock']").each(function (i, o) {
+            var nickName = $(o).find("input[name*='nickName']");
+            nickName.val(nickNames.eq(i).val());
+            var url = $(o).find("input[name*='url']");
+            url.val(urls.eq(i).val());
+        });
+    }
+
+    linkSettingAction.save = function () {
+        var data = new Array();
+        $("div[name='linkBlock']").each(function (i, o) {
+            var nickName = $(o).find("input[name='nickName']").val();
+            var url = $(o).find("input[name='url']").val();
+            var obj = {
+                nickName: nickName,
+                url: url
+            }
+            data.push(obj);
+        });
+        $.post("/saveLinks", $("#linksForm").serializeArray(), function (result) {
+            console.log(result);
+        });
+    }
+
+</script>
+</body>
+</html>

@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 @Data
 public class FileUploadConfig {
 
+    private String relativePath;
+    private String realPath;
     private String logoRelativePath;
     private String logoRealPath;
     private String bannerRelativePath;

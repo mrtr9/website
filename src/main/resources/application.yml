@@ -46,6 +46,8 @@ logging:
   level:debug
 
 fileupload:
+  relativePath: /images/
+  realPath: D:/images/
   logoRelativePath: /images/logo/
   logoRealPath: D:/images/logo/
   bannerRelativePath: /images/banner/

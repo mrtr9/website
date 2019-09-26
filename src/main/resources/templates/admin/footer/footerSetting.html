@@ -6,12 +6,87 @@
     <link rel="stylesheet" href="../../assest/css/common.css"/>
     <link rel="stylesheet" href="../../assest/js/layui/css/layui.css"/>
     <script type="text/javascript" src="../../assest/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../../assest/js/jquery.serializejson.min.js"></script>
     <script type="text/javascript" src="../../assest/js/layui/layui.js"></script>
     <script type="text/javascript" src="../../assest/js/common.js"></script>
 </head>
 <body>
-    <div class="layui-container">
+<div class="layui-container" style="margin-top: 20px;">
+    <form id="footerForm" class="layui-form">
+        <div class="layui-row">
+            <div class="layui-col-md6">
+                <label class="layui-form-label">电话：</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input" name="telephone" placeholder="请输入电话"/>
+                </div>
+            </div>
+            <div class="layui-col-md6">
+                <label class="layui-form-label">邮箱：</label>
+                <div class="layui-input-block">
+                    <input type="email" class="layui-input" name="email" placeholder="请输入邮箱"/>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="layui-row">
+            <div class="layui-form-item">
+                <label class="layui-form-label">地址：</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input" name="address" placeholder="请输入地址"/>
+                </div>
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="layui-form-item">
+                <label class="layui-form-label">Copyright：</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input" name="copyRight" placeholder="请输入Copyright和备案号"/>
+                </div>
+            </div>
+        </div>
+        <div class="layui-row">
+            <label class="layui-form-label">二维码：</label>
+            <div class="layui-input-block">
+                <button type="button" class="layui-btn" id="fileUpload">
+                    <i class="layui-icon">&#xe67c;</i>上传二维码
+                </button>
+            </div>
+        </div>
+        <br/>
+    </form>
+</div>
+<hr class="hr"/>
+<div align="center" class="layui-row">
+    <button id="footerSubmit" class="layui-btn layui-btn-normal">保存</button>
+</div>
+<script>
+    var footerSettingAction = {};
 
-    </div>
+    layui.use('upload', function () {
+        var upload = layui.upload;
+
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#fileUpload' //绑定元素
+            , url: '/saveFooter' //上传接口
+            // ,accept:"images"
+            , acceptMime: "image/*"
+            , auto: false
+            , bindAction: "#footerSubmit"
+            , before: function () {
+                this.data = $("#footerForm").serializeJSON();
+            }
+            , done: function (res) {
+                //上传完毕回调
+                $.msg(res.message);
+                $("#footerForm")[0].reset();
+            }
+            , error: function () {
+                //请求异常回调
+            }
+        });
+    });
+
+</script>
 </body>
 </html>

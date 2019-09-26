@@ -72,12 +72,29 @@
                     </li>
                 </ul>
             </li>
+
             <li>
-                <a onclick="xadmin.add_tab('页尾管理','footer/footerSetting.html')">
-                    <i class="iconfont left-nav-li" lay-tips="页尾管理">&#xe723;</i>
+                <a href="javascript:;">
+                    <i class="iconfont left-nav-li" lay-tips="首页管理">&#xe723;</i>
                     <cite>页尾管理</cite>
-                </a>
+                    <i class="iconfont nav_right">&#xe697;</i></a>
+                <ul class="sub-menu">
+                    <li>
+                        <a onclick="xadmin.add_tab('页尾内容设置','footer/footerSetting.html')">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>页尾内容设置</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a onclick="xadmin.add_tab('合作伙伴设置','footer/linkSetting.html')">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>合作伙伴设置</cite>
+                        </a>
+                    </li>
+                </ul>
             </li>
+
+
         </ul>
     </div>
 </div>
@@ -114,9 +131,9 @@
 <script>
     var adminMainAction = {};
 
-    adminMainAction.logout = function(){
-        $.post("../logout",null,function(result){
-            if(result.data){
+    adminMainAction.logout = function () {
+        $.post("../logout", null, function (result) {
+            if (result.data) {
                 $.msg(result.message);
                 window.location.href = "admin/main";
             }

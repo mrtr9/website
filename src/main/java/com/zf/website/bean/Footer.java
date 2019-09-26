@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * Model:
  * Author:Tr9(韩峰)
@@ -18,5 +20,10 @@ import lombok.NoArgsConstructor;
 public class Footer {
 
     private Integer id;
-
+    private String telephone;
+    private String email;
+    private String address;
+    private String copyRight;
+    private String qrRealPath;
+    private String qrRelativePath;
 }

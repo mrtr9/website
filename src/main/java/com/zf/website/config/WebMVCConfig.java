@@ -31,6 +31,7 @@ public class WebMVCConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler(fileUploadConfig.getRelativePath() + "**").addResourceLocations("file:" + fileUploadConfig.getRealPath());
         registry.addResourceHandler(fileUploadConfig.getLogoRelativePath() + "**").addResourceLocations("file:" + fileUploadConfig.getLogoRealPath());
         registry.addResourceHandler(fileUploadConfig.getBannerRelativePath() + "**").addResourceLocations("file:" + fileUploadConfig.getBannerRealPath());
     }
