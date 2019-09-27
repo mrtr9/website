@@ -36,7 +36,7 @@
                                        placeholder='请输入友情链接地址'/>
                             </div>
                         </div>
-                        <div class='layui-col-md1' style="padding-left: 10px;">
+                        <div class='layui-col-md1' style="padding-left: 10px;" onclick="linkSettingAction.delete(this)">
                             <a class="layui-btn"><i class="layui-icon">&#xe640;</i>删除</a>
                         </div>
                     </div>
@@ -55,52 +55,105 @@
 
     var linkSettingAction = {}
 
-    var linksNum = 0;
+    $(function () {
+        linkSettingAction.list();
+    });
 
     linkSettingAction.addLink = function () {
-        linksNum++;
         var linkDiv = $("#linkDiv");
         var html = $("#linkDiv").html();
         var nickNames = $("input[name*='nickName']");
         var urls = $("input[name*='url']");
         html += "<div name='linkBlock'><div class='layui-row' >" +
-            "<div class='layui-col-md4'>" +
+            "<div class='layui-col-md3'>" +
             "<label class='layui-form-label'>名称：</label>" +
             "<div class='layui-input-block'>" +
-            "<input type='text' class='layui-input' name='links[" + linksNum + "].nickName' value='' placeholder='请输入友情连接名称'/>" +
+            "<input type='text' class='layui-input' name='links[].nickName' value='' placeholder='请输入友情连接名称'/>" +
             "</div>" +
             "</div>" +
             "<div class='layui-col-md8'>" +
             "<label class='layui-form-label'>链接地址：</label>" +
             "<div class='layui-input-block'>" +
-            "<input type='text' class='layui-input' name='links[" + linksNum + "].url' value='' placeholder='请输入友情链接地址'/>" +
+            "<input type='text' class='layui-input' name='links[].url' value='' placeholder='请输入友情链接地址'/>" +
             "</div>" +
+            "</div>" +
+            "<div class='layui-col-md1' style='padding-left: 10px;' onclick='linkSettingAction.delete(this)'>" +
+            "<a class='layui-btn'><i class='layui-icon'>&#xe640;</i>删除</a>" +
             "</div>" +
             "</div><br/></div>";
         linkDiv.html(html);
         $("div[name='linkBlock']").each(function (i, o) {
             var nickName = $(o).find("input[name*='nickName']");
             nickName.val(nickNames.eq(i).val());
+            nickName.attr("name", "links[" + i + "].nickName");
             var url = $(o).find("input[name*='url']");
             url.val(urls.eq(i).val());
+            url.attr("name", "links[" + i + "].url");
         });
     }
 
     linkSettingAction.save = function () {
-        var data = new Array();
         $("div[name='linkBlock']").each(function (i, o) {
-            var nickName = $(o).find("input[name='nickName']").val();
-            var url = $(o).find("input[name='url']").val();
-            var obj = {
-                nickName: nickName,
-                url: url
+            var nickName = $(o).find("input[name*='nickName']").val();
+            var url = $(o).find("input[name*='url']").val();
+            if(!nickName && !url){
+                $(o).remove();
             }
-            data.push(obj);
         });
         $.post("/saveLinks", $("#linksForm").serializeArray(), function (result) {
-            console.log(result);
+            $.msg(result.message);
         });
     }
+
+    linkSettingAction.delete = function (o) {
+        $(o).parent().parent().remove();
+        $("div[name='linkBlock']").each(function (i, o) {
+            var nickName = $(o).find("input[name*='nickName']");
+            nickName.attr("name", "links[" + i + "].nickName");
+            var url = $(o).find("input[name*='url']");
+            url.attr("name", "links[" + i + "].url");
+        });
+    }
+
+    linkSettingAction.list = function () {
+        $.get("/listLinks", {}, function (result) {
+            if (result.data) {
+                var linkDiv = $("#linkDiv");
+                linkDiv.html("");
+                var html = "";
+                $(result.data).each(function (i, o) {
+                    html += "<div name='linkBlock'><div class='layui-row' >" +
+                        "<input type='hidden' name='links[].id' value='" + o.id + "'>" +
+                        "<div class='layui-col-md3'>" +
+                        "<label class='layui-form-label'>名称：</label>" +
+                        "<div class='layui-input-block'>" +
+                        "<input type='text' class='layui-input' name='links[].nickName' value='" + o.nickName + "' placeholder='请输入友情连接名称'/>" +
+                        "</div>" +
+                        "</div>" +
+                        "<div class='layui-col-md8'>" +
+                        "<label class='layui-form-label'>链接地址：</label>" +
+                        "<div class='layui-input-block'>" +
+                        "<input type='text' class='layui-input' name='links[].url' value='" + o.url + "' placeholder='请输入友情链接地址'/>" +
+                        "</div>" +
+                        "</div>" +
+                        "<div class='layui-col-md1' style='padding-left: 10px;' onclick='linkSettingAction.delete(this)'>" +
+                        "<a class='layui-btn'><i class='layui-icon'>&#xe640;</i>删除</a>" +
+                        "</div>" +
+                        "</div><br/></div>";
+                });
+                linkDiv.html(html);
+                $("div[name='linkBlock']").each(function (i, o) {
+                    var id = $(o).find("input[name*='id']");
+                    id.attr("name","links["+i+"].id");
+                    var nickName = $(o).find("input[name*='nickName']");
+                    nickName.attr("name", "links[" + i + "].nickName");
+                    var url = $(o).find("input[name*='url']");
+                    url.attr("name", "links[" + i + "].url");
+                });
+            }
+        });
+    }
+
 
 </script>
 </body>

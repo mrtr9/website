@@ -92,7 +92,7 @@
 
     bannerSettingAction.bannerList = function () {
         $.get("/listBanner", {}, function (result) {
-            if (result.data.length > 0) {
+            if (result.data) {
                 var bannerViews = $("#bannerViews");
                 var html = "";
                 $(result.data).each(function (i, o) {

@@ -58,7 +58,7 @@
         $.get("/listLogo", {}, function (result) {
             var logoViews = $("#logoViews");
             var html = "";
-            if (result.data != null) {
+            if (result.data) {
                 $(result.data).each(function (i, o) {
                     if(o.used){
                         html += "<div class='logoDiv'><img logoId='"+o.id+"' class='logoSize logoSelect pointer' src='"+o.relativePath+"' onclick='logoSettingAction.selectedLogo(this)'/><i logoId='"+o.id+"' onclick='logoSettingAction.deleteLogo(this)' class='layui-icon pointer'>&#xe640;</i></div>";

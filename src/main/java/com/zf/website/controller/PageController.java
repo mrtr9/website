@@ -1,7 +1,10 @@
 package com.zf.website.controller;
 
 import com.zf.website.bean.Banner;
+import com.zf.website.bean.Footer;
+import com.zf.website.bean.Link;
 import com.zf.website.bean.Logo;
+import com.zf.website.service.IFooterService;
 import com.zf.website.service.IIndexService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,12 +27,19 @@ public class PageController {
     @Autowired
     private IIndexService indexService;
 
+    @Autowired
+    private IFooterService footerService;
+
     @RequestMapping("index.html")
     public String index(Model model){
         Logo logo = indexService.getUsedLogo();
         List<Banner> bannerList = indexService.getUsedListBanner();
+        List<Link> linkList = footerService.listLinks();
+        Footer footer = footerService.getFooter();
         model.addAttribute("logo", logo);
         model.addAttribute("bannerList", bannerList);
+        model.addAttribute("linkList", linkList);
+        model.addAttribute("footer", footer);
         return "index";
     }
 

@@ -159,6 +159,7 @@ $.fn.extend({
             var inputs = $(this).find("input");
             var textAreas = $(this).find("textarea");
             var selects = $(this).find("select");
+            var imgs = $(this).find("img");
             if (spans.length > 0) {
                 spans.each(function (i, o) {
                     var name = $(o).attr("name");
@@ -204,6 +205,12 @@ $.fn.extend({
                 selects.each(function (i, o) {
                     var name = $(o).attr("name");
                     $(o).val(data[name]);
+                });
+            }
+            if(imgs.length > 0){
+                imgs.each(function(i,o){
+                    var name = $(o).attr("name");
+                    $(o).attr("src",data[name]);
                 });
             }
         } else {

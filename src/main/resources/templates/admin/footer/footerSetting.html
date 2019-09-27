@@ -13,17 +13,18 @@
 <body>
 <div class="layui-container" style="margin-top: 20px;">
     <form id="footerForm" class="layui-form">
+        <input type="hidden" id="id" name="id"/>
         <div class="layui-row">
             <div class="layui-col-md6">
                 <label class="layui-form-label">电话：</label>
                 <div class="layui-input-block">
-                    <input type="text" class="layui-input" name="telephone" placeholder="请输入电话"/>
+                    <input type="text" class="layui-input" id="telephone" name="telephone" placeholder="请输入电话"/>
                 </div>
             </div>
             <div class="layui-col-md6">
                 <label class="layui-form-label">邮箱：</label>
                 <div class="layui-input-block">
-                    <input type="email" class="layui-input" name="email" placeholder="请输入邮箱"/>
+                    <input type="text" class="layui-input" id="email" name="email" placeholder="请输入邮箱"/>
                 </div>
             </div>
         </div>
@@ -32,7 +33,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">地址：</label>
                 <div class="layui-input-block">
-                    <input type="text" class="layui-input" name="address" placeholder="请输入地址"/>
+                    <input type="text" class="layui-input" id="address" name="address" placeholder="请输入地址"/>
                 </div>
             </div>
         </div>
@@ -40,16 +41,25 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">Copyright：</label>
                 <div class="layui-input-block">
-                    <input type="text" class="layui-input" name="copyRight" placeholder="请输入Copyright和备案号"/>
+                    <input type="text" class="layui-input" id="copyRight" name="copyRight" placeholder="请输入Copyright和备案号"/>
                 </div>
             </div>
         </div>
         <div class="layui-row">
             <label class="layui-form-label">二维码：</label>
             <div class="layui-input-block">
-                <button type="button" class="layui-btn" id="fileUpload">
+                <button type="button" class="layui-btn" id="fileUpload" onclick="footerSettingAction.chooseFile()">
                     <i class="layui-icon">&#xe67c;</i>上传二维码
                 </button>
+            </div>
+        </div>
+        <br/>
+        <div class="layui-row">
+            <div class="layui-input-block">
+                <input type="file" style="display: none" accept=".jpg,.png" id="file" name="file"/>
+                <input type="hidden" id="qrRelativePath"  name="qrRelativePath"/>
+                <input type="hidden" id="qrRealPath" name="qrRealPath"/>
+                <img id="qrCode" name="qrRelativePath" class="QRCode"/>
             </div>
         </div>
         <br/>
@@ -57,35 +67,73 @@
 </div>
 <hr class="hr"/>
 <div align="center" class="layui-row">
-    <button id="footerSubmit" class="layui-btn layui-btn-normal">保存</button>
+    <button id="footerSubmit" class="layui-btn layui-btn-normal" onclick="footerSettingAction.editFooter()">保存</button>
+    <button class="layui-btn layui-btn-danger" onclick="footerSettingAction.clearFooter()">清空数据并保存</button>
 </div>
 <script>
     var footerSettingAction = {};
 
-    layui.use('upload', function () {
-        var upload = layui.upload;
+    $("#file").on("change",function(){
+        // Get a reference to the fileList
+        var files = !!this.files ? this.files : [];
+        // If no files were selected, or no FileReader support, return
+        if (!files.length || !window.FileReader) return;
+        // Only proceed if the selected file is an image
+        if (/^image/.test(files[0].type)) {
+            // Create a new instance of the FileReader
+            var reader = new FileReader();
+            // Read the local file as a DataURL
+            reader.readAsDataURL(files[0]);
+            // When loaded, set image data as background of div
+            reader.onloadend = function () {
+                $("#qrCode").attr("src", this.result);
+            }
+        }
+    });
 
-        //执行实例
-        var uploadInst = upload.render({
-            elem: '#fileUpload' //绑定元素
-            , url: '/saveFooter' //上传接口
-            // ,accept:"images"
-            , acceptMime: "image/*"
-            , auto: false
-            , bindAction: "#footerSubmit"
-            , before: function () {
-                this.data = $("#footerForm").serializeJSON();
-            }
-            , done: function (res) {
-                //上传完毕回调
-                $.msg(res.message);
-                $("#footerForm")[0].reset();
-            }
-            , error: function () {
-                //请求异常回调
+    $(function () {
+        footerSettingAction.getFooter();
+    });
+
+    footerSettingAction.chooseFile = function () {
+        $("#file").click();
+    }
+
+    footerSettingAction.getFooter = function () {
+        $.get("/getFooter",{}, function (result) {
+            if (result.data) {
+                console.log(result.data);
+                $("#footerForm").setValue(result.data);
             }
         });
-    });
+    }
+
+    footerSettingAction.editFooter = function(){
+        var id = $("#id").val();
+        var telephone = $("#telephone").val();
+        var email = $("#email").val();
+        var address = $("#address").val();
+        var copyRight = $("#copyRight").val();
+        var qrRelativePath = $("#qrRelativePath").val();
+        var qrRealPath = $("#qrRealPath").val();
+        var file = $("#file")[0].files[0];
+        $.upload("/saveFooter", {id:id,telephone:telephone,email:email,address:address,copyRight:copyRight,qrRealPath:qrRealPath,qrRelativePath:qrRelativePath,file:file},function(result){
+            $.msg(result.message);
+            if(result.data){
+                footerSettingAction.getFooter();
+            }
+        });
+    }
+
+    footerSettingAction.clearFooter = function(){
+        $.post("/saveFooter",{},function(result){
+            $.msg(result.message);
+            if(result.data){
+                $("#footerForm")[0].reset();
+                $("#qrCode").attr("src","");
+            }
+        });
+    }
 
 </script>
 </body>

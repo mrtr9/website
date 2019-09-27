@@ -41,3 +41,8 @@
 .myHidden{
     display: none;
 }
+
+.QRCode{
+    width: 86px;
+    height: 86px;
+}
