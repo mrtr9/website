@@ -42,9 +42,10 @@
         </div>
     </div>
     <div class="layui-row" style="margin-top: 10px;">
-        <span>注：</span><br/>
-        <span>&nbsp;&nbsp;&nbsp;&nbsp;1.banner建议展示1920*898尺寸的图片</span><br/>
-        <span>&nbsp;&nbsp;&nbsp;&nbsp;2.绿色边框的图片为首页启用的banner图片</span>
+        <span style="color:red">注：</span><br/>
+        <span style="color:red">&nbsp;&nbsp;&nbsp;&nbsp;1.banner建议展示1920*898尺寸的图片</span><br/>
+        <span style="color:red">&nbsp;&nbsp;&nbsp;&nbsp;2.点击图片可以启用Banner</span><br/>
+        <span style="color:red">&nbsp;&nbsp;&nbsp;&nbsp;2.绿色边框的图片为首页启用的banner图片</span>
     </div>
 </div>
 <hr class="hr"/>
@@ -116,7 +117,6 @@
         var bannerId = $(obj).attr("bannerId");
         $.getSychronization("/getBanner", {id: bannerId}, function (result) {
             if (result.data.used) {
-                console.log("failed");
                 $.confirm("停用", "是否停用此展示图片？", function () {
                     $.put("/unsedBanner", {id: bannerId}, function (r) {
                         $(obj).removeClass("bannerSelect");
@@ -163,10 +163,10 @@
         });
     }
 
-    bannerSettingAction.doBannerEdit = function(){
-        $.put("/updateBanner",$("#bannerEditForm").serializeArray(),function(result){
+    bannerSettingAction.doBannerEdit = function () {
+        $.put("/updateBanner", $("#bannerEditForm").serializeArray(), function (result) {
             $.msg(result.message);
-            if(result.data){
+            if (result.data) {
                 layer.close(index);
             }
         });

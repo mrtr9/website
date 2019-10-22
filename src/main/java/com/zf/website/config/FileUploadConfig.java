@@ -21,5 +21,12 @@ public class FileUploadConfig {
     private String logoRealPath;
     private String bannerRelativePath;
     private String bannerRealPath;
-
+    private String aboutRelativePath;
+    private String aboutRealPath;
+    private String productRelativePath;
+    private String productRealPath;
+    private String newsRelativePath;
+    private String newsRealPath;
+    private String caseRelativePath;
+    private String caseRealPath;
 }

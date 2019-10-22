@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>公司简介</title>
+    <link rel="stylesheet" href="../../assest/css/common.css"/>
+    <link rel="stylesheet" href="../../assest/js/layui/css/layui.css"/>
+    <link rel="stylesheet" href="../../assest/js/ueditor/themes/default/css/umeditor.css">
+    <script type="text/javascript" src="../../assest/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../../assest/js/layui/layui.js"></script>
+    <script type="text/javascript" src="../../assest/js/common.js"></script>
+    <script type="text/javascript" src="../../assest/js/ueditor/umeditor.config.js"></script>
+    <script type="text/javascript" src="../../assest/js/ueditor/umeditor.min.js"></script>
+    <script type="text/javascript" src="../../assest/js/ueditor/lang/zh-cn/zh-cn.js"></script>
+</head>
+<body>
+<input type="hidden" id="id" name="id">
+<textarea id="companyProfileEditor" style="height: 500px;width: 100%;"></textarea>
+<hr class="hr"/>
+<div align="center">
+    <button onclick="companyProfileAction.submit()" class="layui-btn layui-btn-normal">保存</button>
+</div>
+</div>
+<script>
+
+    var companyProfileAction = {};
+
+    var index;
+
+    var um = UM.getEditor('companyProfileEditor');
+
+    $(function () {
+        companyProfileAction.getCompanyProfile();
+    });
+
+    companyProfileAction.submit = function () {
+        var id = $("#id").val();
+        var content = um.getContent();
+        if (id) {
+            $.put("/about/updateCompanyProfile", {id: id, content: content}, function (result) {
+                $.msg(result.message);
+                if (result.data) {
+                    companyProfileAction.getCompanyProfile();
+                }
+            });
+        } else {
+            $.post("/about/saveCompanyProfile", {id: id, content: content}, function (result) {
+                $.msg(result.message);
+                if (result.data) {
+                    companyProfileAction.getCompanyProfile();
+                }
+            });
+        }
+
+    }
+
+    companyProfileAction.getCompanyProfile = function () {
+        $.get("/about/getCompanyProfile", {}, function (result) {
+            if (result.data) {
+                $("#id").val(result.data.id);
+                um.setContent(result.data.content);
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 /**
- 
+/**
+
  @Name: layuiNetCompany - 大气风格的网络公司企业模版
  @Author: xuxingyu
  @Copyright: layui.com
@@ -404,7 +405,20 @@ body {
     position: relative;
 }
 
+.main-news .content1 > div {
+    height: 100px;
+    padding-bottom: 40px;
+    border-bottom: 1px dashed #eaeaea;
+    position: relative;
+}
+
 .main-news .content .news-img {
+    display: inline-block;
+    width: 30%;
+    vertical-align: top;
+}
+
+.main-news .content1 .news-img {
     display: inline-block;
     width: 30%;
     vertical-align: top;
@@ -414,15 +428,39 @@ body {
     max-width: 90%;
 }
 
+.main-news .content1 .news-img img {
+    max-width: 90%;
+}
+
 .main-news .content .news-panel {
     display: inline-block;
     width: 70%;
     vertical-align: top;
     padding-left: 5px;
     box-sizing: border-box;
+    float:right;
+}
+
+.main-news .content1 .news-panel {
+    display: inline-block;
+    width: 70%;
+    vertical-align: top;
+    padding-left: 5px;
+    box-sizing: border-box;
+    float:right;
 }
 
 .main-news .content .news-panel strong a {
+    display: block;
+    color: #555;
+    font-size: 18px;
+    line-height: 26px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.main-news .content1 .news-panel strong a {
     display: block;
     color: #555;
     font-size: 18px;
@@ -437,9 +475,26 @@ body {
     line-height: 24px;
 }
 
+.main-news .content1 .news-panel .detail1 {
+    color: #777;
+    line-height: 24px;
+    height: 70px;
+    width: 500px; /*必须设置宽度*/
+    overflow: hidden; /*溢出隐藏*/
+    text-overflow: ellipsis; /*以省略号...显示*/
+    white-space: nowrap; /*强制不换行*/
+}
+
+.main-news .content1 .news-panel .detail1 img {
+    display: none;
+}
+
 .main-news .content .news-panel p.read-push {
     color: #AAA;
     padding-top: 5px;
+}
+.main-news .content1 .news-panel p.read-push1 {
+    color: #AAA;
 }
 
 .main-news #newsPage .layui-laypage {

@@ -5,17 +5,13 @@ import com.zf.website.bean.User;
 import com.zf.website.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * Model:后台管理模块
@@ -34,27 +30,7 @@ public class AdminController {
         return "admin/adminLogin";
     }
 
-//    @RequestMapping("admin/main")
-//    public String main(){
-//        return "admin/adminMain";
-//    }
-//
-//    @RequestMapping("admin/adminIndex.html")
-//    public String adminIndex(){
-//        return "admin/adminIndex";
-//    }
-//
-//    @RequestMapping("admin/index/logoSetting")
-//    public String logoSetting(){
-//        return "admin/index/logoSetting";
-//    }
-//
-//    @RequestMapping("admin/password/changePassword")
-//    public String changePassword(){
-//        return "admin/password/changePassword";
-//    }
-
-    @RequestMapping(value = "login",method = RequestMethod.POST)
+    @RequestMapping(value = "login", method = RequestMethod.POST)
     @ResponseBody
     public ResponseResult login(@Valid User user, BindingResult bindingResult, HttpSession session) {
         if (bindingResult.hasErrors()) {
@@ -72,7 +48,7 @@ public class AdminController {
 
     @RequestMapping("logout")
     @ResponseBody
-    public ResponseResult logout(HttpSession session){
+    public ResponseResult logout(HttpSession session) {
         session.removeAttribute("loginUser");
         session.invalidate();
         return ResponseResult.builder().code(200).message("注销成功").data(Boolean.TRUE).build();

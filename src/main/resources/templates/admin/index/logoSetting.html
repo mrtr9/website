@@ -17,9 +17,10 @@
         </button>
     </div>
     <div class="layui-row" style="margin-top: 10px;">
-        <span>注：</span><br/>
-        <span>&nbsp;&nbsp;&nbsp;&nbsp;1.首页建议展示200*40尺寸的Logo</span><br/>
-        <span>&nbsp;&nbsp;&nbsp;&nbsp;2.绿色边框的Logo为首页启用的Logo</span>
+        <span style="color:red">注：</span><br/>
+        <span style="color:red">&nbsp;&nbsp;&nbsp;&nbsp;1.首页建议展示200*40尺寸的Logo</span><br/>
+        <span style="color:red">&nbsp;&nbsp;&nbsp;&nbsp;2.点击图片可以启用Logo</span><br/>
+        <span style="color:red">&nbsp;&nbsp;&nbsp;&nbsp;3.绿色边框的Logo为首页启用的Logo</span>
     </div>
 </div>
 <hr class="hr"/>
@@ -60,10 +61,10 @@
             var html = "";
             if (result.data) {
                 $(result.data).each(function (i, o) {
-                    if(o.used){
-                        html += "<div class='logoDiv'><img logoId='"+o.id+"' class='logoSize logoSelect pointer' src='"+o.relativePath+"' onclick='logoSettingAction.selectedLogo(this)'/><i logoId='"+o.id+"' onclick='logoSettingAction.deleteLogo(this)' class='layui-icon pointer'>&#xe640;</i></div>";
-                    }else{
-                        html += "<div class='logoDiv'><img logoId='"+o.id+"' class='logoSize pointer' src='"+o.relativePath+"' onclick='logoSettingAction.selectedLogo(this)'/><i logoId='"+o.id+"' onclick='logoSettingAction.deleteLogo(this)' class='layui-icon pointer'>&#xe640;</i></div>";
+                    if (o.used) {
+                        html += "<div class='logoDiv'><img logoId='" + o.id + "' class='logoSize logoSelect pointer' src='" + o.relativePath + "' onclick='logoSettingAction.selectedLogo(this)'/><i logoId='" + o.id + "' onclick='logoSettingAction.deleteLogo(this)' class='layui-icon pointer'>&#xe640;</i></div>";
+                    } else {
+                        html += "<div class='logoDiv'><img logoId='" + o.id + "' class='logoSize pointer' src='" + o.relativePath + "' onclick='logoSettingAction.selectedLogo(this)'/><i logoId='" + o.id + "' onclick='logoSettingAction.deleteLogo(this)' class='layui-icon pointer'>&#xe640;</i></div>";
                     }
                 });
             }
@@ -71,28 +72,40 @@
         });
     };
 
-    logoSettingAction.deleteLogo = function(obj){
-        $.confirm("删除Logo","确认删除此Logo吗？",function(){
-           var logoId = $(obj).attr("logoId");
-           $.delete("/deleteLogo",{id:logoId},function(result){
-               $.msg(result.message);
-               if(result.data){
-                   logoSettingAction.getLogoList();
-               }
-           });
-        });
-    }
-
-    logoSettingAction.selectedLogo = function(obj){
-        $.confirm("启用Logo","启用此Logo将取消其他启用Logo,确定启用此Logo作为首页展示吗？",function(){
+    logoSettingAction.deleteLogo = function (obj) {
+        $.confirm("删除Logo", "确认删除此Logo吗？", function () {
             var logoId = $(obj).attr("logoId");
-            $.put("/usedLogo",{id:logoId},function(result){
+            $.delete("/deleteLogo", {id: logoId}, function (result) {
                 $.msg(result.message);
-                if(result.data){
-                    $(obj).addClass("logoSelect");
+                if (result.data) {
+                    logoSettingAction.getLogoList();
                 }
             });
         });
+    }
+
+    logoSettingAction.selectedLogo = function (obj) {
+        var isSelected = $(obj).hasClass("logoSelect");
+        if(isSelected){
+            $.confirm("停用Logo","将停用此Logo，是否继续？",function(){
+                $.put("/unsedLogo", {}, function (result) {
+                    $.msg(result.message);
+                    if (result.data) {
+                        $(obj).removeClass("logoSelect");
+                    }
+                });
+            });
+        }else{
+            $.confirm("启用Logo", "启用此Logo将取消其他启用Logo,确定启用此Logo作为首页展示吗？", function () {
+                var logoId = $(obj).attr("logoId");
+                $.put("/usedLogo", {id: logoId}, function (result) {
+                    $.msg(result.message);
+                    if (result.data) {
+                        $(obj).addClass("logoSelect");
+                    }
+                });
+            });
+        }
     }
 </script>
 </body>

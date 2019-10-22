@@ -81,6 +81,15 @@ public class IndexController {
         return ResponseResult.builder().code(200).message("操作失败").data(Boolean.FALSE).build();
     }
 
+    @PutMapping("unsedLogo")
+    public ResponseResult unsedLogo(){
+        boolean flag = indexService.unsedLogo();
+        if(flag)
+            return ResponseResult.builder().code(200).message("停用成功").data(Boolean.TRUE).build();
+        return ResponseResult.builder().code(200).message("停用失败").data(Boolean.FALSE).build();
+    }
+
+
     @PostMapping("saveBanner")
     public ResponseResult saveBanner(Banner banner,MultipartFile file){
         try {

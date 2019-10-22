@@ -30,10 +30,10 @@ spring:
 server:
   tomcat:
     uri-encoding: UTF-8
-  port: 8080
+  port: 80
   servlet:
     session:
-      timeout: 120m
+      timeout: 10s
 
 mybatis:
   mapper-locations: classpath:static/mapper/*.xml
@@ -43,7 +43,9 @@ mybatis:
     aggressive-lazy-loading: false
 
 logging:
-  level:debug
+  level:
+    com.zf.website.mapper: debug
+
 
 fileupload:
   relativePath: /images/
@@ -52,3 +54,11 @@ fileupload:
   logoRealPath: D:/images/logo/
   bannerRelativePath: /images/banner/
   bannerRealPath: D:/images/banner/
+  productRelativePath: /images/product/
+  productRealPath: D:/images/product/
+  newsRelativePath: /images/news/
+  newsRealPath: D:/images/news/
+  caseRelativePath: /images/case/
+  caseRealPath: D:/images/case/
+  aboutRelativePath: /images/about/
+  aboutRealPath: D:/images/about/

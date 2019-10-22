@@ -89,13 +89,13 @@ $.extend({
                 yes: function (index, layero) {
                     //按钮【按钮一】的回调
                     if (typeof option.btn1 === 'function') {
-                        option.btn1();
+                        option.btn1(index,layero);
                     }
                     layer.close(index);
                 }
                 , btn2: function (index, layero) {
                     if (typeof option.btn2 === 'function') {
-                        option.btn3();
+                        option.btn2(index,layero);
                     }
                     //按钮【按钮二】的回调
 
@@ -103,7 +103,7 @@ $.extend({
                 }
                 , btn3: function (index, layero) {
                     if (typeof option.btn3 === 'function') {
-                        option.btn3();
+                        option.btn3(index,layero);
                     }
                     //按钮【按钮三】的回调
 
@@ -141,6 +141,22 @@ $.extend({
         }
         $.ajax({
             type: "post",
+            url: url,
+            contentType: false,
+            processData: false,
+            data: formData,
+            success: function (result) {
+                callback(result);
+            }
+        });
+    },
+    "uploadByPut": function (url, params, callback) {
+        var formData = new FormData();
+        for(var key in params){
+            formData.append(key,params[key]);
+        }
+        $.ajax({
+            type: "put",
             url: url,
             contentType: false,
             processData: false,

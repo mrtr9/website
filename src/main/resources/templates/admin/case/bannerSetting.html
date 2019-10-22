@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Banner设置</title>
+    <link rel="stylesheet" href="../../assest/css/common.css"/>
+    <link rel="stylesheet" href="../../assest/js/layui/css/layui.css"/>
+    <script type="text/javascript" src="../../assest/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../../assest/js/layui/layui.js"></script>
+    <script type="text/javascript" src="../../assest/js/common.js"></script>
+</head>
+<body>
+<div class="layui-container" style="margin-top: 10px;">
+    <div class="layui-row">
+        <form id="bannerForm" class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">标题：</label>
+                <div class="layui-input-block">
+                    <input type="text" id="title" name="title" autocomplete="off" placeholder="请输入标题"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">描述：</label>
+                <div class="layui-input-block">
+                    <input type="text" id="describe" name="describe" autocomplete="off" placeholder="请输入描述"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">图片：</label>
+                <div class="layui-input-block">
+                    <button type="button" class="layui-btn" id="fileUpload">
+                        <i class="layui-icon">&#xe67c;</i>上传图片
+                    </button>
+                </div>
+            </div>
+
+        </form>
+        <div align="center" class="layui-row">
+            <button id="bannerSubmit" class="layui-btn layui-btn-normal">保存</button>
+        </div>
+    </div>
+    <div class="layui-row" style="margin-top: 10px;">
+        <span style="color:red">注：</span><br/>
+        <span style="color:red">&nbsp;&nbsp;&nbsp;&nbsp;1.banner建议展示1920*320尺寸的图片</span><br/>
+        <span style="color:red">&nbsp;&nbsp;&nbsp;&nbsp;2.点击图片可以启用Banner</span><br/>
+        <span style="color:red">&nbsp;&nbsp;&nbsp;&nbsp;2.绿色边框的图片为关于我们中启用的banner图片</span>
+    </div>
+</div>
+<hr class="hr"/>
+<div id="bannerViews" class="layui-container" style="margin-top: 10px;">
+
+</div>
+<script>
+
+    var index;
+
+    var bannerSettingAction = {};
+
+    $(function () {
+        bannerSettingAction.bannerList();
+    });
+
+    layui.use('upload', function () {
+        var upload = layui.upload;
+
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#fileUpload' //绑定元素
+            , url: '/case/saveBanner' //上传接口
+            // ,accept:"images"
+            , acceptMime: "image/*"
+            , auto: false
+            , bindAction: "#bannerSubmit"
+            , before: function () {
+                this.data = {
+                    title: $("#title").val(),
+                    describe: $("#describe").val()
+                }
+            }
+            , done: function (res) {
+                //上传完毕回调
+                $.msg(res.message);
+                $("#bannerForm")[0].reset();
+                bannerSettingAction.bannerList();
+            }
+            , error: function () {
+                //请求异常回调
+            }
+        });
+    });
+
+    bannerSettingAction.bannerList = function () {
+        $.get("/case/listBanner", {}, function (result) {
+            if (result.data) {
+                var bannerViews = $("#bannerViews");
+                var html = "";
+                $(result.data).each(function (i, o) {
+                    if (o.used) {
+                        html += "<div class='bannerDiv'>" +
+                            "<div><img bannerId='" + o.id + "' onclick='bannerSettingAction.changeBannerType(this)' class='bannerSize bannerSelect pointer' src='" + o.relativePath + "'/></div>" +
+                            "<div style='margin-top: 10px;'>" +
+                            "<i onclick='bannerSettingAction.editBanner(this)' bannerId='" + o.id + "' class='layui-icon pointer'>&#xe642;</i>" +
+                            "<i style='position: relative;margin-left: 450px;' bannerId='" + o.id + "' onclick='bannerSettingAction.deleteBanner(this)' class='layui-icon pointer'>&#xe640;</i>" +
+                            "</div>" +
+                            "</div>";
+                    } else {
+                        html += "<div class='bannerDiv'>" +
+                            "<div><img bannerId='" + o.id + "' onclick='bannerSettingAction.changeBannerType(this)' class='bannerSize pointer' src='" + o.relativePath + "'/></div>" +
+                            "<div style='margin-top: 10px;'>" +
+                            "<i onclick='bannerSettingAction.editBanner(this)' bannerId='" + o.id + "' class='layui-icon pointer'>&#xe642;</i>" +
+                            "<i style='position: relative;margin-left: 450px;' bannerId='" + o.id + "' onclick='bannerSettingAction.deleteBanner(this)' class='layui-icon pointer'>&#xe640;</i>" +
+                            "</div>" +
+                            "</div>";
+                    }
+                });
+                bannerViews.html(html);
+            }
+        });
+    }
+
+    bannerSettingAction.changeBannerType = function (obj) {
+        var bannerId = $(obj).attr("bannerId");
+        $.getSychronization("/case/getBanner", {id: bannerId}, function (result) {
+            if (result.data.used) {
+                $.confirm("停用", "是否停用此展示图片？", function () {
+                    $.put("/case/unsedBanner", {id: bannerId}, function (r) {
+                        $(obj).removeClass("bannerSelect");
+                        $.msg(r.message);
+                    });
+                });
+            } else {
+                $.confirm("启用", "是否启用此展示图片？", function () {
+                    $.put("/case/usedBanner", {id: bannerId}, function (r) {
+                        $(".bannerDiv").each(function(i,o){
+                            $(o).find("img").removeClass("bannerSelect");
+                        });
+                        $(obj).addClass("bannerSelect");
+                        $.msg(r.message);
+                    });
+                });
+            }
+        });
+    }
+
+    bannerSettingAction.editBanner = function (obj) {
+        var bannerId = $(obj).attr("bannerId");
+        $.get("/case/getBanner", {id: bannerId}, function (result) {
+            //页面层
+            index = layer.open({
+                type: 1,
+                skin: 'layui-layer-rim', //加上边框
+                title: "编辑",
+                area: ['500px', '310px'], //宽高
+                content:
+                    "<div class='layui-container' style='width: 400px;height: 240px;'>" +
+                    "<form id='bannerEditForm' class='layui-form'>" +
+                    "<input name='editId' type='hidden' value='" + result.data.id + "'/>" +
+                    "<div class='layui-row' style='margin-top: 20px;'>" +
+                    "<label for=''>标题：</label>" +
+                    "<input type='text' id='title' name='editTitle' value='" + result.data.title + "' class='layui-input' />" +
+                    "</div>" +
+                    "<div class='layui-row' style='margin-top: 20px;'>" +
+                    "<label for=''>描述：</label>" +
+                    "<input type='text' id='title' name='editDescribe' value='" + result.data.describe + "' class='layui-input' />" +
+                    "</div>" +
+                    "</form>" +
+                    "<div align='center' style='margin-top: 30px;'><button onclick='bannerSettingAction.doBannerEdit()' class='layui-btn layui-btn-normal'>修改</button></div>" +
+                    "</div>"
+
+            });
+        });
+    }
+
+    bannerSettingAction.doBannerEdit = function(){
+        $.put("/case/updateBanner",$("#bannerEditForm").serializeArray(),function(result){
+            $.msg(result.message);
+            if(result.data){
+                layer.close(index);
+            }
+        });
+    }
+
+    bannerSettingAction.deleteBanner = function (obj) {
+        var bannerId = $(obj).attr("bannerId");
+        $.confirm("删除", "是否删除此展示图片？", function () {
+            $.delete("/news/deleteBanner", {id: bannerId}, function (result) {
+                $.msg(result.message);
+                bannerSettingAction.bannerList();
+            });
+        });
+    }
+
+
+</script>
+</body>
+</html>

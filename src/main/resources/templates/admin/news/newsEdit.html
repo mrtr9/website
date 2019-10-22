@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>动态信息</title>
+    <link rel="stylesheet" href="../../assest/css/common.css"/>
+    <link rel="stylesheet" href="../../assest/js/layui/css/layui.css"/>
+    <script type="text/javascript" src="../../assest/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../../assest/js/layui/layui.js"></script>
+    <script type="text/javascript" src="../../assest/js/common.js"></script>
+</head>
+<body>
+<form id="newsForm" style="margin-top: 10px;">
+    <input type="hidden" id="id" name="id">
+    <div class="layui-container">
+        <div class="layui-form-item">
+            <label class="layui-form-label">标题</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="title" name="title" placeholder="请输入标题">
+            </div>
+        </div>
+        <div id="imgDiv" class="layui-form-item">
+            <label class="layui-form-label">预览图</label>
+            <div class="layui-input-block">
+                <input type="file" id="file" name="file" accept="image/*" style="display: none">
+                <input type="hidden" id="imgRealPath" name="imgRealPath">
+                <input type="hidden" id="imgRelativePath" name="imgRelativePath">
+                <button type="button" class="layui-btn" id="fileUpload" onclick="newsEditAction.upload();">
+                    <i class="layui-icon">&#xe67c;</i>上传图片
+                </button>
+                <div style="float: right;padding-right: 200px;">
+                    <p style="color:red">建议使用184*142大小的图片</p>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">预览</label>
+            <div class="layui-input-block">
+                <img id="newsPreview" style="width:92px;height:71px;border: 1px solid grey;">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">描述</label>
+            <div class="layui-input-block">
+                <textarea id="describe" name="describe"></textarea>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+
+    var newsEditAction = {};
+
+    var index;
+
+    $(function () {
+        var params = $.getAllUrlParams();
+        if ((params.id != null || params.id != 'undefined') || (params.edit != null && params.edit != 'undefined')) {
+            newsEditAction.getNews(params.id);
+            if (params.edit === 'false') {
+                newsEditAction.readOnly();
+            } else {
+                layui.use('layedit', function () {
+                    var layedit = layui.layedit;
+
+                    layedit.set({
+                        uploadImage: {
+                            url: '/news/upload' //接口url
+                        }
+                    });
+
+                    index = layedit.build('describe', {
+                        tool: [
+                            'strong' //加粗
+                            , 'italic' //斜体
+                            , 'underline' //下划线
+                            , 'del' //删除线
+                            , '|' //分割线
+                            , 'left' //左对齐
+                            , 'center' //居中对齐
+                            , 'right' //右对齐
+                            , 'link' //超链接
+                            , 'unlink' //清除链接
+                            , 'face' //表情
+                            , 'image' //插入图片
+                            // , 'help' //帮助
+                        ],
+                        contenteditable: true,
+                        height: 220
+                    }); //建立编辑器
+                });
+            }
+        }
+    });
+
+    $("#file").on("change", function () {
+        // Get a reference to the fileList
+        var files = !!this.files ? this.files : [];
+        // If no files were selected, or no FileReader support, return
+        if (!files.length || !window.FileReader) return;
+        // Only proceed if the selected file is an image
+        if (/^image/.test(files[0].type)) {
+            // Create a new instance of the FileReader
+            var reader = new FileReader();
+            // Read the local file as a DataURL
+            reader.readAsDataURL(files[0]);
+            // When loaded, set image data as background of div
+            reader.onloadend = function () {
+                $("#newsPreview").attr("src", this.result);
+            }
+        }
+    });
+
+    newsEditAction.getNews = function(id){
+        $.get("/news/getNews",{id:id},function(result){
+            if(result.data){
+                $("#newsForm").setValue(result.data);
+                if(result.data.imgRelativePath){
+                    $("#newsPreview").attr("src",result.data.imgRelativePath);
+                }
+            }
+        });
+    }
+
+    newsEditAction.upload = function(){
+        $("#file").click();
+    }
+    newsEditAction.readOnly = function () {
+        $("#title").attr("readonly","true");
+        $("#imgDiv").remove();
+        layui.use('layedit', function () {
+            var layedit = layui.layedit;
+            layedit.set({
+                uploadImage: {
+                    url: '/news/upload' //接口url
+                }
+            });
+            index = layedit.build('describe', {
+                tool: [
+                    'strong' //加粗
+                    , 'italic' //斜体
+                    , 'underline' //下划线
+                    , 'del' //删除线
+                    , '|' //分割线
+                    , 'left' //左对齐
+                    , 'center' //居中对齐
+                    , 'right' //右对齐
+                    , 'link' //超链接
+                    , 'unlink' //清除链接
+                    , 'face' //表情
+                    , 'image' //插入图片
+                    // , 'help' //帮助
+                ],
+                contenteditable: false,
+                height: 220
+            }); //建立编辑器
+        });
+    }
+
+    newsEditAction.callbackData = function () {
+        var describe = "";
+        layui.use('layedit', function () {
+            var layedit = layui.layedit;
+            describe = layedit.getContent(index);
+        });
+        var id = $("#id").val();
+        var title = $("#title").val();
+        var imgRealPath = $("#imgRealPath").val();
+        var imgRelativePath = $("#imgRelativePath").val();
+        var file = $("#file")[0].files[0]
+        var data = {
+            id: id,
+            title: title,
+            imgRealPath: imgRealPath,
+            imgRelativePath: imgRelativePath,
+            file: file,
+            describe: describe
+        };
+        return data;
+    }
+</script>
+</body>
+</html>

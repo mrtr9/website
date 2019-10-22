@@ -5,19 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 /**
  * Model:
  * Author:Tr9(韩峰)
  * Description:
- * Time: 2019/9/26 17:28
+ * Time: 2019/9/29 11:19
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LinkForm {
-
-    private List<Link> links;
+public class CompanyProfile {
+    private Integer id;
+    private String content;
 }

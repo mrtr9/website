@@ -4,21 +4,21 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>后台登陆</title>
-    <link rel="stylesheet" href="assest/css/auth.css">
+    <link rel="stylesheet" th:href="@{/assest/css/auth.css}">
 
-    <script type="text/javascript" src="assest/js/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="assest/js/jquery.validation/jquery.validate.min.js"></script>
-    <script type="text/javascript" src="assest/js/jquery.validation/validate-methods.js"></script>
-    <script type="text/javascript" src="assest/js/jquery.validation/messages_zh.min.js"></script>
-    <script type="text/javascript" src="assest/js/layui/layui.js"></script>
-    <script type="text/javascript" src="assest/js/common.js"></script>
+    <script type="text/javascript" th:src="@{/assest/js/jquery-3.3.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/assest/js/jquery.validation/jquery.validate.min.js}"></script>
+    <script type="text/javascript" th:src="@{/assest/js/jquery.validation/validate-methods.js}"></script>
+    <script type="text/javascript" th:src="@{/assest/js/jquery.validation/messages_zh.min.js}"></script>
+    <script type="text/javascript" th:src="@{/assest/js/layui/layui.js}"></script>
+    <script type="text/javascript" th:src="@{/assest/js/common.js}"></script>
     <style>
         /*.error {*/
-            /*position: absolute;*/
-            /*right: 18px;*/
-            /*top: 5px;*/
-            /*color: #ef392b;*/
-            /*font-size: 12px;*/
+        /*position: absolute;*/
+        /*right: 18px;*/
+        /*top: 5px;*/
+        /*color: #ef392b;*/
+        /*font-size: 12px;*/
         /*}*/
     </style>
 
@@ -27,7 +27,7 @@
 <body>
 <div class="lowin">
     <div class="lowin-brand">
-        <img src="assest/img/kodinger.jpg" alt="logo">
+        <img th:src="@{/assest/img/kodinger.jpg}" alt="logo">
     </div>
     <div class="lowin-wrapper">
         <div class="lowin-box lowin-login">
@@ -46,7 +46,7 @@
                                class="lowin-input">
                         <label id="password-error" class="error" for="password" style="display: none;"></label>
                     </div>
-                    <button id="loginBtn" class="lowin-btn login-btn">
+                    <button type="submit" id="loginBtn" class="lowin-btn login-btn">
                         登陆
                     </button>
                 </form>
@@ -59,11 +59,16 @@
     $.validator.setDefaults({
         submitHandler: function () {
             $("#loginBtn").setBtnDisabled();
-            $.post("login",$("#loginForm").serializeArray(),function(result){
+            $.post("/login", $("#loginForm").serializeArray(), function (result) {
                 $("#loginBtn").setBtnEnabled();
                 $.msg(result.message);
-                if(result.data){
-                    window.location.href = "admin/adminMain.html";
+                if (result.data) {
+                    var redirect = '[[${redirect}]]';
+                    if (redirect) {
+                        window.location.href = "/admin/adminMain.html?redirect=" + redirect;
+                    } else {
+                        window.location.href = "/admin/adminMain.html";
+                    }
                 }
             });
         }

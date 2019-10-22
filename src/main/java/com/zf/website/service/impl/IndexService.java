@@ -49,8 +49,12 @@ public class IndexService implements IIndexService {
 
     @Override
     public boolean usedLogo(Integer id) {
-        indexMapper.unsedLogo();
-        return indexMapper.usedLogo(id) > 0 ? true : false;
+        return indexMapper.unsedLogo() + indexMapper.usedLogo(id) > 0 ? true : false;
+    }
+
+    @Override
+    public boolean unsedLogo() {
+        return indexMapper.unsedLogo() > 0 ? true : false;
     }
 
     @Override

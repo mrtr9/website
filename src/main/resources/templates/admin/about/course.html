@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>发展历程</title>
+    <link rel="stylesheet" href="../../assest/css/common.css"/>
+    <link rel="stylesheet" href="../../assest/js/layui/css/layui.css"/>
+    <script type="text/javascript" src="../../assest/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../../assest/js/layui/layui.js"></script>
+    <script type="text/javascript" src="../../assest/js/common.js"></script>
+
+    <style type="text/css">
+        .layui-table-cell{
+            text-align:center;
+            height: auto;
+            white-space: normal;
+        }
+        .layui-table img{
+            max-width:200px
+        }
+    </style>
+</head>
+<body>
+
+<div style="margin-top: 10px;">
+    <a class="layui-btn layui-btn-sm layui-btn-primary" onclick="courseAction.add()"><i class="layui-icon">&#xe654;</i></a>
+</div>
+<table class="layui-hide" id="courseTable" lay-filter="courseTable"></table>
+
+<script type="text/html" id="courseTableOperationBar">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script type="text/html" id="courseDescribeTemplet">
+    <div class="describeDiv">
+        {{d.describe}}
+    </div>
+</script>
+
+<script type="text/html" id="courseImgTemplet">
+    <div>
+        <img style="height:auto!important;" src="{{d.imgRelativePath}}">
+    </div>
+</script>
+
+<script>
+
+    var courseAction = {};
+
+    layui.use('table', function () {
+        var table = layui.table;
+
+        table.render({
+            elem: '#courseTable'
+            , id: "courseTable"
+            , url: '/about/listCourse'
+            , page: true
+            , title: "历程表"
+            , cols: [
+                [
+                    {field: 'id', width: 80, title: 'ID'}
+                    , {
+                    field: 'time',
+                    width: 100,
+                    title: '日期',
+                    templet: '<div>{{ layui.util.toDateString(d.time, "yyyy-MM") }}</div>',
+                }
+                    , {
+                    title: '图片',
+                    width: 250,
+                    templet: '#courseImgTemplet'
+                }
+                    , {field: 'describe', width: 700, title: '描述', templet: "#courseDescribeTemplet"}
+                    , {title: "操作", toolbar: "#courseTableOperationBar"}
+                ]
+            ]
+        });
+
+        //监听行工具事件
+        table.on('tool(courseTable)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data //获得当前行数据
+                , layEvent = obj.event; //获得 lay-event 对应的值
+            if (layEvent === 'detail') {
+                courseAction.details(data.id);
+            } else if (layEvent === 'del') {
+                layer.confirm('是否删除这条记录？', function (index) {
+                    $.delete("/about/deleteCourse", {id: data.id}, function (result) {
+                        $.msg(result.message);
+                        if (result.data) {
+                            table.reload("courseTable", {});
+                        }
+                        layer.close(index);
+                    });
+                });
+            } else if (layEvent === 'edit') {
+                courseAction.edit(data.id);
+            }
+        });
+
+    });
+
+    courseAction.add = function () {
+        var options = {
+            title: "新增历程信息",
+            maxmin: true,
+            width: 600,
+            height: 620,
+            btns: ['保存', '关闭'],
+            btn1: function (index, layero) {
+                var form = $(layero).find("iframe")[0].contentWindow.courseEditAction.callbackData();
+                $.upload("/about/saveCourse", form, function (result) {
+                    $.msg(result.message);
+                    if (result.data) {
+                        layui.use('table', function () {
+                            var table = layui.table;
+                            table.reload("courseTable", {});
+                        });
+                    }
+                });
+            }
+        }
+        $.iframe("courseEdit.html", options, {edit: true});
+    }
+
+    courseAction.details = function (id) {
+        var options = {
+            title: "发展历程详情",
+            maxmin: true,
+            width: 600,
+            height: 620,
+            btns: ['关闭'],
+        }
+        $.iframe("courseEdit.html", options, {id:id,edit: false});
+    }
+
+    courseAction.edit = function (id) {
+
+
+        var options = {
+            title: "修改发展历程",
+            maxmin: true,
+            width: 600,
+            height: 620,
+            btns: ['修改', '关闭'],
+            btn1:function(index,layero){
+                var form = $(layero).find("iframe")[0].contentWindow.courseEditAction.callbackData();
+                $.uploadByPut("/about/updateCourse", form, function (result) {
+                    $.msg(result.message);
+                    if (result.data) {
+                        layui.use('table', function () {
+                            var table = layui.table;
+                            table.reload("courseTable", {});
+                        });
+                    }
+                });
+            }
+        }
+        $.iframe("courseEdit.html", options, {id:id,edit: true});
+    }
+
+</script>
+</body>
+</html>

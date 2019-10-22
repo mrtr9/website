@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>招聘信息</title>
+    <link rel="stylesheet" href="../../assest/css/common.css"/>
+    <link rel="stylesheet" href="../../assest/js/layui/css/layui.css"/>
+    <script type="text/javascript" src="../../assest/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../../assest/js/layui/layui.js"></script>
+    <script type="text/javascript" src="../../assest/js/common.js"></script>
+</head>
+<body>
+<div class="layui-container" style="margin-top: 10px;">
+    <form class="layui-form" id="recruitForm">
+        <input type="hidden" id="id" name="id">
+        <div class="layui-form-item">
+            <label for="title" class="layui-form-label">标题：</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" id="title" name="title" placeholder="请输入标题">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="describe" class="layui-form-label">描述：</label>
+            <div class="layui-input-block">
+                <textarea id="describe" name="describe"></textarea>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+
+    var recruitEditAction = {};
+
+    var index;
+
+    $(function () {
+        var params = $.getAllUrlParams();
+        if ((params.id != null || params.id != 'undefined') || (params.edit != null && params.edit != 'undefined')) {
+            recruitEditAction.getRecruit(params.id);
+            if (params.edit === 'false') {
+                recruitEditAction.readOnly();
+            }else{
+                layui.use('layedit', function () {
+                    var layedit = layui.layedit;
+                    index = layedit.build('describe', {
+                        tool: [
+                            'strong' //加粗
+                            , 'italic' //斜体
+                            , 'underline' //下划线
+                            , 'del' //删除线
+                            , '|' //分割线
+                            , 'left' //左对齐
+                            , 'center' //居中对齐
+                            , 'right' //右对齐
+                            // , 'link' //超链接
+                            // , 'unlink' //清除链接
+                            , 'face' //表情
+                            // , 'image' //插入图片
+                            // , 'help' //帮助
+                        ],
+                        contenteditable: true
+                    }); //建立编辑器
+                });
+            }
+        }
+    });
+
+
+    recruitEditAction.callbackData = function () {
+        var describe = "";
+        layui.use('layedit', function () {
+            var layedit = layui.layedit;
+            describe = layedit.getContent(index);
+        });
+
+        var data = {
+            id:$("#id").val(),
+            title: $("#title").val(),
+            describe: describe
+        }
+        return data;
+    }
+
+    recruitEditAction.getRecruit = function (id) {
+        $.get("/about/getRecruit", {id: id}, function (result) {
+            $("#recruitForm").setValue(result.data);
+        });
+    }
+
+    recruitEditAction.readOnly = function () {
+        $("#title").attr("readonly", "true");
+        layui.use('layedit', function () {
+            var layedit = layui.layedit;
+            index = layedit.build('describe', {
+                tool: [
+                    'strong' //加粗
+                    , 'italic' //斜体
+                    , 'underline' //下划线
+                    , 'del' //删除线
+                    , '|' //分割线
+                    , 'left' //左对齐
+                    , 'center' //居中对齐
+                    , 'right' //右对齐
+                    // , 'link' //超链接
+                    // , 'unlink' //清除链接
+                    , 'face' //表情
+                    // , 'image' //插入图片
+                    // , 'help' //帮助
+                ],
+                contenteditable: false
+            }); //建立编辑器
+        });
+    }
+
+</script>
+</body>
+</html>

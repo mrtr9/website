@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>产品管理</title>
+    <link rel="stylesheet" href="../../assest/css/common.css"/>
+    <link rel="stylesheet" href="../../assest/js/layui/css/layui.css"/>
+    <script type="text/javascript" src="../../assest/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../../assest/js/layui/layui.js"></script>
+    <script type="text/javascript" src="../../assest/js/common.js"></script>
+
+    <style type="text/css">
+        .layui-table-cell {
+            text-align: center;
+            height: auto;
+            white-space: normal;
+        }
+
+        .layui-table img {
+            max-width: 250px
+        }
+    </style>
+</head>
+<body>
+
+<div style="margin-top: 10px;">
+    <a class="layui-btn layui-btn-sm layui-btn-primary" onclick="productManagerAction.add()"><i class="layui-icon">&#xe654;</i></a>
+</div>
+<table class="layui-hide" id="productTable" lay-filter="productTable"></table>
+
+<script type="text/html" id="productTableOperationBar">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script type="text/html" id="imgTemplet">
+    <div>
+        <img style="height:auto!important;width: 250px;" src="{{d.imgRelativePath}}">
+    </div>
+</script>
+
+<script type="text/html" id="describeTemplet">
+    <div class="describeDiv">
+        {{d.describe}}
+    </div>
+</script>
+
+<script>
+
+    var productManagerAction = {};
+
+    layui.use('table', function () {
+        var table = layui.table;
+
+        table.render({
+            elem: '#productTable'
+            , id: "productTable"
+            , url: '/product/listPageProduct'
+            , page: true
+            , title: "产品表"
+            , cols: [
+                [
+                    {field: 'id', width: 50, title: 'ID'}
+                    , {field: 'title', width: 200, title: '标题'}
+                    , {title: "图片", width: 300, toolbar: "#imgTemplet"}
+                    , {field: 'describe', width: 550, title: '描述', templet: "#describeTemplet"}
+                    , {title: "操作", toolbar: "#productTableOperationBar"}
+                ]
+            ]
+        });
+
+        //监听行工具事件
+        table.on('tool(productTable)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data //获得当前行数据
+                , layEvent = obj.event; //获得 lay-event 对应的值
+            if (layEvent === 'detail') {
+                productManagerAction.details(data.id);
+            } else if (layEvent === 'del') {
+                layer.confirm('是否删除这条记录？', function (index) {
+                    $.delete("/product/deleteProduct", {id: data.id}, function (result) {
+                        $.msg(result.message);
+                        if (result.data) {
+                            table.reload("productTable", {});
+                        }
+                        layer.close(index);
+                    });
+                });
+            } else if (layEvent === 'edit') {
+                productManagerAction.edit(data.id);
+            }
+        });
+
+    });
+
+    productManagerAction.add = function () {
+        var options = {
+            title: "新增产品信息",
+            maxmin: true,
+            width: 600,
+            height: 600,
+            btns: ['保存', '关闭'],
+            btn1: function (index, layero) {
+                var form = $(layero).find("iframe")[0].contentWindow.productEditAction.callbackData();
+                $.upload("/product/saveProduct", form, function (result) {
+                    $.msg(result.message);
+                    if (result.data) {
+                        layui.use('table', function () {
+                            var table = layui.table;
+                            table.reload("productTable", {});
+                        });
+                    }
+                });
+            }
+        }
+        $.iframe("productEdit.html", options, {edit: true});
+    }
+
+    productManagerAction.edit = function (id) {
+        var options = {
+            title: "修改产品信息",
+            maxmin: true,
+            width: 600,
+            height: 600,
+            btns: ['修改', '关闭'],
+            btn1: function (index, layero) {
+                var form = $(layero).find("iframe")[0].contentWindow.productEditAction.callbackData();
+                $.uploadByPut("/product/updateProduct", form, function (result) {
+                    $.msg(result.message);
+                    if (result.data) {
+                        layui.use('table', function () {
+                            var table = layui.table;
+                            table.reload("productTable", {});
+                        });
+                    }
+                });
+            }
+        }
+        $.iframe("productEdit.html", options, {id: id, edit: true});
+    }
+
+    productManagerAction.details = function (id) {
+        var options = {
+            title: "产品信息详情",
+            maxmin: true,
+            width: 600,
+            height: 600,
+            btns: ['关闭'],
+        }
+        $.iframe("productEdit.html", options, {id: id, edit: false});
+    }
+
+</script>
+</body>
+</html>

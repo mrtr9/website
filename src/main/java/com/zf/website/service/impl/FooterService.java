@@ -46,7 +46,10 @@ public class FooterService implements IFooterService {
             return true;
         }
         if (footer != null && file == null) {
-            return footerMapper.updateFooter(footer) > 0 ? true : false;
+            if(footer.getId() != null)
+                return footerMapper.updateFooter(footer) > 0 ? true : false;
+            else
+                return footerMapper.saveFooter(footer) > 0 ? true : false;
         }
         if (footer != null && file != null) {
             String fileName = System.currentTimeMillis() + "-" + file.getOriginalFilename();
@@ -64,7 +67,7 @@ public class FooterService implements IFooterService {
                 if (f != null) {
                     flag = f.delete();
                 }
-                return flag && footerMapper.saveFooter(footer) > 0 ? true : false;
+                return flag && footerMapper.updateFooter(footer) > 0 ? true : false;
             } else {
                 return footerMapper.saveFooter(footer) > 0 ? true : false;
             }

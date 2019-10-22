@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
+<head th:fragment="head(title)">
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
-    <title>类友网络-首页</title>
+    <title th:text="${title} == null ? (${name} != null ? ${name.getName()} + '-首页' : '类友网络-首页') : ${title}"></title>
     <link rel="stylesheet" href="assest/css/common.css"/>
     <link rel="stylesheet" href="assest/js/layui/css/layui.css"/>
     <link rel="stylesheet" href="assest/css/index.css"/>
+    <script src="assest/js/layui/layui.js"></script>
+    <script src="assest/js/jquery-3.3.1.min.js"></script>
+    <script src="assest/js/common.js"></script>
+    <script src="assest/js/html5.min.js"></script>
+    <script src="assest/js/respond.min.js"></script>
 </head>
 <body>
 <!-- nav部分 -->
-<div class="nav index">
+<div class="nav index" th:fragment="nav(select)">
     <div class="layui-container">
         <!-- 公司logo -->
         <div class="nav-logo">
@@ -20,17 +25,19 @@
             </a>
         </div>
         <div class="nav-list">
+            <button>
+                <span></span><span></span><span></span>
+            </button>
             <ul class="layui-nav" lay-filter="">
-                <li class="layui-nav-item layui-this"><a href="index.html">首页</a></li>
-                <li class="layui-nav-item"><a href="product.html">产品</a></li>
-                <li class="layui-nav-item"><a href="news.html">动态</a></li>
-                <li class="layui-nav-item"><a href="case.html">案例</a></li>
-                <li class="layui-nav-item"><a href="about.html">关于</a></li>
+                <li th:class="${select} == null ? 'layui-nav-item layui-this' : 'layui-nav-item'"><a href="index.html">首页</a></li>
+                <li th:class="${select} == 1 ? 'layui-nav-item layui-this' : 'layui-nav-item'"><a href="product.html">产品</a></li>
+                <li th:class="${select} == 2 ? 'layui-nav-item layui-this' : 'layui-nav-item'"><a href="news.html">动态</a></li>
+                <li th:class="${select} == 3 ? 'layui-nav-item layui-this' : 'layui-nav-item'"><a href="case.html">案例</a></li>
+                <li th:class="${select} == 4 ? 'layui-nav-item layui-this' : 'layui-nav-item'"><a href="about.html">关于</a></li>
             </ul>
         </div>
     </div>
 </div>
-
 <!-- banner部分 -->
 <div>
     <div class="layui-carousel" id="banner">
@@ -162,7 +169,7 @@
 
 
 <!-- footer部分 -->
-<div class="footer">
+<div class="footer" th:fragment="footer">
     <div class="layui-container">
         <p class="footer-web" th:if="${linkList.size() == 0}">
             <a>合作伙伴</a>
@@ -198,13 +205,13 @@
             <div class="layui-col-sm2 layui-col-lg1"><img th:src="${footer.getQrRelativePath()}"></div>
             <div class="layui-col-sm10 layui-col-lg11">
                 <div class="layui-row">
-                    <div class="layui-col-sm6 layui-col-md8 layui-col-lg9">
+                    <div class="layui-col-sm6 layui-col-md8 layui-col-lg8">
                         <p class="contact-top"><i class="layui-icon layui-icon-cellphone"></i>&nbsp;<span th:text="${footer.getTelephone()}">400-8888888</span>&nbsp;&nbsp;&nbsp;
                         </p>
                         <p class="contact-bottom"><i
                                 class="layui-icon layui-icon-home"></i>&nbsp;<span th:text="${footer.getEmail()}">88888888@163.com</span></p>
                     </div>
-                    <div class="layui-col-sm6 layui-col-md4 layui-col-lg3">
+                    <div class="layui-col-sm6 layui-col-md4 layui-col-lg4">
                         <p class="contact-top"><span class="right" th:text="${footer.getAddress()}">浙江杭州阿里巴巴西溪园区</span></p>
                         <p class="contact-bottom"><span class="right" th:text="${footer.getCopyRight()}">Copyright&nbsp;©&nbsp;2016-2018&nbsp;&nbsp;ICP&nbsp;备888888号</span></p>
                     </div>
@@ -213,11 +220,6 @@
         </div>
     </div>
 </div>
-<script src="assest/js/layui/layui.js"></script>
-<!--[if lt IE 9]>
-<script src="assest/js/html5.min.js"></script>
-<script src="assest/js/respond.min.js"></script>
-<![endif]-->
 <script>
     layui.config({
         base: 'assest/js/'

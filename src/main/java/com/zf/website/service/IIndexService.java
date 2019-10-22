@@ -17,6 +17,8 @@ public interface IIndexService {
 
     boolean usedLogo(Integer id);
 
+    boolean unsedLogo();
+
     boolean saveBanner(Banner banner);
 
     boolean deleteBanner(Integer id);

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="index :: head('类友网络-产品动态')">
+
+</head>
+<body>
+<!-- nav部分 -->
+<div class="nav" th:replace="index :: nav('1')">
+
+</div>
+<!-- main部分 -->
+<div class="main-newsdate">
+    <div class="layui-container">
+        <h1 id="title">这家引爆ins的奶茶店终于空降南昌，开放加盟啦！</h1>
+        <div><img id="img" src="assest/img/news_big.jpg" alt="新闻详情图"></div>
+        <p class="introBott" id="describe">
+            北极光的制作，需要300g葡萄来完成，要选用最新鲜的葡萄，才能做出最灿烂的北极光。满满一瓶葡萄，看着就让人倍感满足。喝之前，要先摇9下，才能喝出最好的果味。晨曦的寓意是，清晨的阳光。要用到一整颗百香果的晨曦，喝起来酸酸甜甜，果味浓郁。晨曦喝起来果味极浓，不仅仅有百香果，还有芒果、橙汁...的味道，十分清新，彷佛夏日的一抹凉风！</p>
+        <div class="layui-row">
+            <div style="display: inline-block;float: left">上一篇：<a id="preA" style="cursor: pointer">无</a></div>
+            <div style="display: inline-block;float: right">下一篇：<a id="nextA" style="cursor: pointer">无</a></div>
+        </div>
+    </div>
+</div>
+<!-- footer部分 -->
+<div th:replace="index::footer"></div>
+<script>
+
+    $(function () {
+        var params = $.getAllUrlParams();
+        if (params.id != null && params.id != 'undefined') {
+            $.getSychronization("/product/getProduct", {id: params.id}, function (result) {
+                $("#title").html(result.data.title);
+                $("#img").attr("src", result.data.imgRelativePath);
+                $("#describe").html(result.data.describe);
+            });
+
+            $.getSychronization("/product/getPreProduct", {id: params.id}, function (result) {
+                if (result.data) {
+                    $("#preA").html(result.data.title);
+                    $("#preA").attr("href", "productDetail.html?id=" + result.data.id);
+                }
+            });
+
+            $.getSychronization("/product/getNextProduct", {id: params.id}, function (result) {
+                if (result.data) {
+                    $("#nextA").html(result.data.title);
+                    $("#nextA").attr("href", "productDetail.html?id=" + result.data.id);
+                }
+            });
+        }
+    });
+
+    layui.config({
+        base: 'assest/js/'
+    }).use('firm');
+</script>
+</body>
+</html>

@@ -46,3 +46,13 @@
     width: 86px;
     height: 86px;
 }
+
+.describeDiv *{
+    display:inline-block;
+}
+
+.courseImg{
+    width:200px;
+    height: 200px;
+}
+

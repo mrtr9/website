@@ -3,7 +3,7 @@ package com.zf.website.controller;
 import com.zf.website.ResponseResult;
 import com.zf.website.bean.Footer;
 import com.zf.website.bean.Link;
-import com.zf.website.bean.LinkForm;
+import com.zf.website.bean.dto.LinkFormDTO;
 import com.zf.website.service.IFooterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -45,7 +44,7 @@ public class FooterController {
     }
 
     @PostMapping("saveLinks")
-    public ResponseResult saveLink(LinkForm linkForm) {
+    public ResponseResult saveLink(LinkFormDTO linkForm) {
         boolean flag = footerService.saveLinks(linkForm.getLinks());
         if (flag)
             return ResponseResult.builder().code(200).message("操作成功").data(Boolean.TRUE).build();

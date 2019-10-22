@@ -48,36 +48,36 @@ public interface IndexMapper {
     })
     Logo getUsedLogo();
 
-    @Insert("insert into t_banner values(null,#{title},#{describe},#{realPath},#{relativePath},#{used})")
+    @Insert("insert into t_banner values(null,#{title},#{describe},#{realPath},#{relativePath},#{used},0)")
     int saveBanner(Banner banner);
 
-    @Delete("delete from t_banner where id=#{id}")
+    @Delete("delete from t_banner where id=#{id} and scope=0")
     int deleteBanner(Integer id);
 
-    @Update("update t_banner set title=#{title},`describe`=#{describe} where id=#{id}")
+    @Update("update t_banner set title=#{title},`describe`=#{describe} where id=#{id} and scope=0")
     int updateBanner(Banner banner);
 
-    @Update("update t_banner set used=1 where id=#{id}")
+    @Update("update t_banner set used=1 where id=#{id} and scope=0")
     int usedBanner(Integer id);
 
-    @Update("update t_banner set used=0 where id=#{id}")
+    @Update("update t_banner set used=0 where id=#{id} and scope=0")
     int unsedBanner(Integer id);
 
-    @Select("select * from t_banner where id=#{id}")
+    @Select("select * from t_banner where id=#{id} and scope=0")
     @Results({
             @Result(column = "real_path",property = "realPath"),
             @Result(column = "relative_path",property = "relativePath")
     })
     Banner getBanner(Integer id);
 
-    @Select("select * from t_banner where used=1")
+    @Select("select * from t_banner where used=1 and scope=0")
     @Results({
             @Result(column = "real_path",property = "realPath"),
             @Result(column = "relative_path",property = "relativePath")
     })
     List<Banner> getUsedListBanner();
 
-    @Select("select * from t_banner")
+    @Select("select * from t_banner where scope=0")
     @Results({
             @Result(column = "real_path",property = "realPath"),
             @Result(column = "relative_path",property = "relativePath")

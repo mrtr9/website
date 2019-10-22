@@ -51,6 +51,7 @@
                 <button type="button" class="layui-btn" id="fileUpload" onclick="footerSettingAction.chooseFile()">
                     <i class="layui-icon">&#xe67c;</i>上传二维码
                 </button>
+                <span style="margin-left: 20px;color: red;">建议上传二维码尺寸为86*86</span>
             </div>
         </div>
         <br/>
@@ -102,7 +103,6 @@
     footerSettingAction.getFooter = function () {
         $.get("/getFooter",{}, function (result) {
             if (result.data) {
-                console.log(result.data);
                 $("#footerForm").setValue(result.data);
             }
         });

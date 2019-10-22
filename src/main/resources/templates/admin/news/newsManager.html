@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>动态管理</title>
+    <link rel="stylesheet" href="../../assest/css/common.css"/>
+    <link rel="stylesheet" href="../../assest/js/layui/css/layui.css"/>
+    <script type="text/javascript" src="../../assest/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../../assest/js/layui/layui.js"></script>
+    <script type="text/javascript" src="../../assest/js/common.js"></script>
+    <style type="text/css">
+        .layui-table-cell {
+            text-align: center;
+            height: auto;
+            white-space: normal;
+        }
+
+        .layui-table img {
+            max-width: 250px
+        }
+    </style>
+</head>
+<body>
+
+<div style="margin-top: 10px;">
+    <a class="layui-btn layui-btn-sm layui-btn-primary" onclick="newsManagerAction.add()"><i class="layui-icon">&#xe654;</i></a>
+</div>
+<table class="layui-hide" id="newsTable" lay-filter="newsTable"></table>
+
+<script type="text/html" id="newsTableOperationBar">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script type="text/html" id="describeTemplet">
+    <div style="height:50px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+        {{d.describe}}
+    </div>
+</script>
+
+<script>
+
+    var newsManagerAction = {};
+
+    layui.use('table', function () {
+        var table = layui.table;
+
+        table.render({
+            elem: '#newsTable'
+            , id: "newsTable"
+            , url: '/news/listPageNews'
+            , page: true
+            , title: "动态表"
+            , cols: [
+                [
+                    {field: 'id', width: 50, title: 'ID'}
+                    , {field: 'publishDate',title: '发布日期'}
+                    , {field: 'title', width: 600, title: '标题'}
+                    , {title: "操作", toolbar: "#newsTableOperationBar"}
+                ]
+            ]
+        });
+
+        //监听行工具事件
+        table.on('tool(newsTable)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data //获得当前行数据
+                , layEvent = obj.event; //获得 lay-event 对应的值
+            if (layEvent === 'detail') {
+                newsManagerAction.details(data.id);
+            } else if (layEvent === 'del') {
+                layer.confirm('是否删除这条记录？', function (index) {
+                    $.delete("/news/deleteNews", {id: data.id}, function (result) {
+                        $.msg(result.message);
+                        if (result.data) {
+                            table.reload("newsTable", {});
+                        }
+                        layer.close(index);
+                    });
+                });
+            } else if (layEvent === 'edit') {
+                newsManagerAction.edit(data.id);
+            }
+        });
+
+    });
+
+    newsManagerAction.add = function () {
+        var options = {
+            title: "新增动态信息",
+            maxmin: true,
+            width: 650,
+            height: 600,
+            btns: ['保存', '关闭'],
+            btn1: function (index, layero) {
+                var form = $(layero).find("iframe")[0].contentWindow.newsEditAction.callbackData();
+                $.upload("/news/saveNews", form, function (result) {
+                    $.msg(result.message);
+                    if (result.data) {
+                        layui.use('table', function () {
+                            var table = layui.table;
+                            table.reload("newsTable", {});
+                        });
+                    }
+                });
+            }
+        }
+        $.iframe("newsEdit.html", options, {edit: true});
+    }
+
+    newsManagerAction.edit = function (id) {
+        var options = {
+            title: "修改动态信息",
+            maxmin: true,
+            width: 650,
+            height: 600,
+            btns: ['修改', '关闭'],
+            btn1: function (index, layero) {
+                var form = $(layero).find("iframe")[0].contentWindow.newsEditAction.callbackData();
+                $.uploadByPut("/news/updateNews", form, function (result) {
+                    $.msg(result.message);
+                    if (result.data) {
+                        layui.use('table', function () {
+                            var table = layui.table;
+                            table.reload("newsTable", {});
+                        });
+                    }
+                });
+            }
+        }
+        $.iframe("newsEdit.html", options, {id: id, edit: true});
+    }
+
+    newsManagerAction.details = function (id) {
+        var options = {
+            title: "动态信息详情",
+            maxmin: true,
+            width: 650,
+            height: 600,
+            btns: ['关闭'],
+        }
+        $.iframe("newsEdit.html", options, {id: id, edit: false});
+    }
+
+</script>
+</body>
+</html>

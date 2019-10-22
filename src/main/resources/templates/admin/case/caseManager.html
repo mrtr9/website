@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>案例管理</title>
+    <link rel="stylesheet" href="../../assest/css/common.css"/>
+    <link rel="stylesheet" href="../../assest/js/layui/css/layui.css"/>
+    <script type="text/javascript" src="../../assest/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../../assest/js/layui/layui.js"></script>
+    <script type="text/javascript" src="../../assest/js/common.js"></script>
+    <style type="text/css">
+        .layui-table-cell {
+            text-align: center;
+            height: auto;
+            white-space: normal;
+        }
+
+        .layui-table img {
+            max-width: 250px
+        }
+    </style>
+</head>
+<body>
+
+<div style="margin-top: 10px;">
+    <a class="layui-btn layui-btn-sm layui-btn-primary" onclick="caseManagerAction.add()"><i
+            class="layui-icon">&#xe654;</i></a>
+</div>
+<table class="layui-hide" id="caseTable" lay-filter="caseTable"></table>
+
+<script type="text/html" id="caseTableOperationBar">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script type="text/html" id="describeTemplet">
+    <div style="height:50px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+        {{d.describe}}
+    </div>
+</script>
+
+<script>
+
+    var caseManagerAction = {};
+
+    layui.use('table', function () {
+        var table = layui.table;
+
+        table.render({
+            elem: '#caseTable'
+            , id: "caseTable"
+            , url: '/case/listPageCase'
+            , page: true
+            , title: "案例表"
+            , cols: [
+                [
+                    {field: 'id', width: 50, title: 'ID'}
+                    , {field: 'date', title: '发布日期'}
+                    , {field: 'title', width: 300, title: '标题'}
+                    , {title: '描述', width: 600, templet: "#describeTemplet"}
+                    , {title: "操作", toolbar: "#caseTableOperationBar"}
+                ]
+            ]
+        });
+
+        //监听行工具事件
+        table.on('tool(caseTable)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data //获得当前行数据
+                , layEvent = obj.event; //获得 lay-event 对应的值
+            if (layEvent === 'detail') {
+                caseManagerAction.details(data.id);
+            } else if (layEvent === 'del') {
+                layer.confirm('是否删除这条记录？', function (index) {
+                    $.delete("/case/deleteCase", {id: data.id}, function (result) {
+                        $.msg(result.message);
+                        if (result.data) {
+                            table.reload("caseTable", {});
+                        }
+                        layer.close(index);
+                    });
+                });
+            } else if (layEvent === 'edit') {
+                caseManagerAction.edit(data.id);
+            }
+        });
+
+    });
+
+    caseManagerAction.add = function () {
+        var options = {
+            title: "新增案例信息",
+            maxmin: true,
+            width: 650,
+            height: 600,
+            btns: ['保存', '关闭'],
+            btn1: function (index, layero) {
+                var form = $(layero).find("iframe")[0].contentWindow.caseEditAction.callbackData();
+                $.upload("/case/saveCase", form, function (result) {
+                    $.msg(result.message);
+                    if (result.data) {
+                        layui.use('table', function () {
+                            var table = layui.table;
+                            table.reload("caseTable", {});
+                        });
+                    }
+                });
+            }
+        }
+        $.iframe("caseEdit.html", options, {edit: true});
+    }
+
+    caseManagerAction.edit = function (id) {
+        var options = {
+            title: "修改案例信息",
+            maxmin: true,
+            width: 650,
+            height: 600,
+            btns: ['修改', '关闭'],
+            btn1: function (index, layero) {
+                var form = $(layero).find("iframe")[0].contentWindow.caseEditAction.callbackData();
+                $.uploadByPut("/case/updateCase", form, function (result) {
+                    $.msg(result.message);
+                    if (result.data) {
+                        layui.use('table', function () {
+                            var table = layui.table;
+                            table.reload("caseTable", {});
+                        });
+                    }
+                });
+            }
+        }
+        $.iframe("caseEdit.html", options, {id: id, edit: true});
+    }
+
+    caseManagerAction.details = function (id) {
+        var options = {
+            title: "案例信息详情",
+            maxmin: true,
+            width: 650,
+            height: 600,
+            btns: ['关闭'],
+        }
+        $.iframe("caseEdit.html", options, {id: id, edit: false});
+    }
+
+</script>
+</body>
+</html>

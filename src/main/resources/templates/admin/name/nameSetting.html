@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>网站名称设置</title>
+    <link rel="stylesheet" href="../../assest/css/common.css"/>
+    <link rel="stylesheet" href="../../assest/js/layui/css/layui.css"/>
+    <script type="text/javascript" src="../../assest/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../../assest/js/layui/layui.js"></script>
+    <script type="text/javascript" src="../../assest/js/common.js"></script>
+</head>
+<body>
+<div class="layui-container">
+    <form id="nameForm">
+        <input type="hidden" id="id" name="id">
+        <div class="layui-form-item">
+            <label class="layui-form-label">名称：</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" name="name" placeholder="请输入网站名称"/>
+            </div>
+        </div>
+    </form>
+</div>
+<hr class="hr">
+<div align="center">
+    <button id="nameSubmit" class="layui-btn layui-btn-normal">保存</button>
+    <button id="nameClear" class="layui-btn layui-btn-danger" style="display: none" onclick="nameSettingAction.clear()">清除</button>
+</div>
+<script>
+    var nameSettingAction = {};
+
+    $(function () {
+        nameSettingAction.getName();
+        nameSettingAction.changeStatus();
+    });
+
+    nameSettingAction.getName = function () {
+        $.getSychronization("/name/", {}, function (result) {
+            if (result.data) {
+                $("#nameForm").setValue(result.data);
+            }
+        });
+    }
+
+    nameSettingAction.changeStatus = function(){
+        var id = $("#id").val();
+        if(id){
+            $("#nameSubmit").html("修改");
+            $("#nameSubmit").attr("onclick","nameSettingAction.update()");
+            $("#nameClear").show();
+        }else{
+            $("#nameSubmit").html("保存");
+            $("#nameSubmit").attr("onclick","nameSettingAction.save()");
+            $("#nameClear").hide();
+        }
+    }
+
+    nameSettingAction.save = function(){
+        $.post("/name/",$("#nameForm").serializeArray(),function(result){
+            $.msg(result.message);
+            if(result.data){
+                nameSettingAction.getName();
+                nameSettingAction.changeStatus();
+            }
+        });
+    }
+
+    nameSettingAction.update = function(){
+        $.put("/name/",$("#nameForm").serializeArray(),function(result){
+            $.msg(result.message);
+        });
+    }
+
+    nameSettingAction.clear = function(){
+        var id = $("#id").val();
+        $.confirm("删除","是否清除网站名称？",function(){
+            $.delete("/name/",{id:id},function(result){
+                $.msg(result.message);
+                if(result.data){
+                    $("#nameForm")[0].reset();
+                    $("#id").val("");
+                    nameSettingAction.changeStatus();
+                }
+            });
+        });
+    }
+
+</script>
+</body>
+</html>
